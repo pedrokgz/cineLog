@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineLog</title>
+    <!-- Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Ícones (Feather Icons) -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        /* Estilo base para a fonte e tema escuro */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #14181c;
+            color: #e0e0e0;
+        }
+        /* Efeito de carregamento para os pôsteres */
+        .poster-loading {
+            background-color: #2c3440;
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        /* Transições suaves */
+        .transition-all { transition: all 0.3s ease-in-out; }
+        /* Scrollbar customizada para o modal */
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: #2c3440; }
+        .modal-content::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            border-radius: 20px;
+            border: 3px solid #2c3440;
+        }
+        /* Estilos para os carrosséis */
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 1rem;
+            scrollbar-width: none; /* Firefox */
+        }
+        .carousel::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 40%; /* 2.5 items on mobile */
+            margin-right: 1rem;
+        }
+        @media (min-width: 640px) { /* sm */
+            .carousel-item { width: 28%; } /* ~3.5 items */
+        }
+        @media (min-width: 768px) { /* md */
+            .carousel-item { width: 22%; } /* ~4.5 items */
+        }
+        @media (min-width: 1024px) { /* lg */
+            .carousel-item { width: 18%; } /* ~5.5 items */
+        }
+        .carousel-container:hover .scroll-btn {
+            opacity: 1;
+        }
+        /* Estilos para o sistema de avaliação de estrelas */
+        .star-rating span {
+            font-size: 2.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #4a5568; /* Cor inativa */
+            transition: color 0.2s ease-in-out;
+        }
+        .star-rating:hover span {
+            color: #f59e0b;
+        }
+        .star-rating span:hover ~ span {
+            color: #4a5568;
+        }
+        .star-rating span.rated {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Cabeçalho -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
+                <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
+                CineLog
+            </h1>
+            <p class="text-gray-400 mt-2">Seu diário pessoal de filmes.</p>
+        </header>
+
+        <!-- Navegação -->
+        <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-md mx-auto">
+            <button id="nav-feed" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
+            <button id="nav-list" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
+            <button id="nav-stats" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+        </nav>
+        
+        <!-- Conteúdo principal que alterna entre feed e lista -->
+        <main>
+            <!-- Seção do Feed (antiga busca) -->
+            <div id="feed-view">
+                <form id="search-form" class="flex gap-2 mb-8 max-w-lg mx-auto">
+                    <input type="text" id="search-input" placeholder="Ainda procurando algo específico?" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
+                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
+                        <i data-feather="search" class="w-5 h-5"></i>
+                    </button>
+                </form>
+
+                <!-- Container para resultados da busca e o feed -->
+                <div id="feed-content">
+                    <!-- Carrosséis serão injetados aqui -->
+                </div>
+            </div>
+
+            <!-- Seção da Lista de Assistidos -->
+            <div id="list-view" class="hidden">
+                <div id="watched-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <!-- Filmes assistidos aparecerão aqui -->
+                </div>
+                <div id="list-placeholder" class="hidden text-center py-16 text-gray-500">
+                    <i data-feather="list" class="w-16 h-16 mx-auto mb-4"></i>
+                    <p>Sua lista de filmes assistidos está vazia.</p>
+                </div>
+            </div>
+
+            <!-- Seção de Estatísticas -->
+            <div id="stats-view" class="hidden max-w-4xl mx-auto">
+                <!-- Dashboard será injetado aqui -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes do Filme / Review -->
+    <div id="movie-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden transition-opacity duration-300 opacity-0">
+        <div id="modal-content-wrapper" class="bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl flex flex-col md:flex-row overflow-hidden transform transition-transform duration-300 scale-95"></div>
+    </div>
+
+    <!-- Notificação Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 border border-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 translate-y-10 transition-all duration-300 z-50">
+        <p id="toast-message"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const TMDB_API_KEY = '5e264941432a0e290b364a1636205f1b';
+
+            // Elementos da UI
+            const app = {
+                nav: { 
+                    feed: document.getElementById('nav-feed'), 
+                    list: document.getElementById('nav-list'),
+                    stats: document.getElementById('nav-stats') 
+                },
+                views: { 
+                    feed: document.getElementById('feed-view'), 
+                    list: document.getElementById('list-view'),
+                    stats: document.getElementById('stats-view')
+                },
+                search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
+                feedContent: document.getElementById('feed-content'),
+                list: { container: document.getElementById('watched-list'), placeholder: document.getElementById('list-placeholder') },
+                toast: { element: document.getElementById('toast'), message: document.getElementById('toast-message') },
+                modal: { overlay: document.getElementById('movie-modal'), contentWrapper: document.getElementById('modal-content-wrapper') }
+            };
+            
+            let watchedList = [];
+            
+            // --- FUNÇÕES PRINCIPAIS ---
+            function init() {
+                if (!TMDB_API_KEY) showApiWarning();
+                loadWatchedList();
+                setupEventListeners();
+                renderWatchedList();
+                loadFeed();
+                feather.replace();
+            }
+
+            function showApiWarning() {
+                app.feedContent.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
+            }
+
+            function loadWatchedList() {
+                const storedList = localStorage.getItem('watchedMovieList');
+                watchedList = storedList ? JSON.parse(storedList) : [];
+            }
+
+            function saveWatchedList() {
+                localStorage.setItem('watchedMovieList', JSON.stringify(watchedList));
+            }
+
+            function setupEventListeners() {
+                app.nav.feed.addEventListener('click', () => switchView('feed'));
+                app.nav.list.addEventListener('click', () => switchView('list'));
+                app.nav.stats.addEventListener('click', () => switchView('stats'));
+                app.search.form.addEventListener('submit', handleSearch);
+                
+                document.querySelector('main').addEventListener('click', (event) => {
+                    const addBtn = event.target.closest('.add-movie-btn');
+                    const removeBtn = event.target.closest('.remove-movie-btn');
+                    const card = event.target.closest('.movie-card');
+                    const scrollBtn = event.target.closest('.scroll-btn');
+
+                    if (addBtn) { event.stopPropagation(); handleAddMovieClick(addBtn); } 
+                    else if (removeBtn) { event.stopPropagation(); handleRemoveMovie(removeBtn); } 
+                    else if (scrollBtn) { event.stopPropagation(); handleCarouselScroll(scrollBtn); }
+                    else if (card) { handleCardClick(card); }
+                });
+
+                app.modal.overlay.addEventListener('click', (event) => {
+                    const closeBtn = event.target.closest('.modal-close-btn');
+                    const saveReviewBtn = event.target.closest('.save-review-btn');
+                    const editReviewBtn = event.target.closest('.edit-review-btn');
+                    const addBtn = event.target.closest('.add-movie-btn');
+
+                    if (event.target === app.modal.overlay || closeBtn) closeModal();
+                    if (saveReviewBtn) handleSaveReview(saveReviewBtn);
+                    if (editReviewBtn) handleEditReviewClick(editReviewBtn);
+                    if (addBtn) handleAddMovieClick(addBtn);
+                });
+            }
+
+            function switchView(viewName) {
+                Object.values(app.views).forEach(view => view.classList.add('hidden'));
+                Object.values(app.nav).forEach(button => {
+                    button.classList.remove('bg-emerald-500', 'text-white');
+                    button.classList.add('text-gray-300');
+                });
+
+                app.views[viewName].classList.remove('hidden');
+                app.nav[viewName].classList.add('bg-emerald-500', 'text-white');
+                app.nav[viewName].classList.remove('text-gray-300');
+
+                if (viewName === 'stats') {
+                    renderStatsDashboard();
+                }
+            }
+            
+            async function fetchTMDB(endpoint) {
+                const separator = endpoint.includes('?') ? '&' : '?';
+                const url = `https://api.themoviedb.org/3/${endpoint}${separator}api_key=${TMDB_API_KEY}&language=pt-BR`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Falha ao buscar dados do endpoint: ${endpoint}`);
+                const data = await response.json();
+                return data;
+            }
+
+            async function loadFeed() {
+                const currentYear = new Date().getFullYear();
+                app.feedContent.innerHTML = renderCarouselSkeleton('Destaques do Dia') 
+                                          + renderCarouselSkeleton('Destaques da Semana') 
+                                          + renderCarouselSkeleton('Lançamentos') 
+                                          + renderCarouselSkeleton(`Melhores de ${currentYear}`);
+                feather.replace();
+
+                try {
+                    const [trendingDay, trendingWeek, releases, bestOfYear] = await Promise.all([
+                        fetchTMDB('trending/movie/day'),
+                        fetchTMDB('trending/movie/week'),
+                        fetchTMDB('movie/now_playing?region=BR'),
+                        fetchTMDB(`discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=${currentYear}`)
+                    ]);
+                    
+                    app.feedContent.innerHTML = '';
+                    renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel');
+                    renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel');
+                    renderCarousel(releases.results, 'Lançamentos', 'releases-carousel');
+                    renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel');
+                    feather.replace();
+                } catch (error) {
+                    console.error("Erro ao carregar o feed:", error);
+                    app.feedContent.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`;
+                }
+            }
+            
+            async function handleSearch(event) {
+                event.preventDefault();
+                const query = app.search.input.value.trim();
+                if (!query) { loadFeed(); return; }
+                app.feedContent.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`;
+                try {
+                    const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`);
+                    renderSearchResults(data.results);
+                } catch (error) {
+                    console.error("Erro na busca:", error);
+                    app.feedContent.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`;
+                }
+            }
+
+            async function handleAddMovieClick(button) {
+                const movieId = parseInt(button.dataset.id, 10);
+                const movieData = await fetchTMDB(`movie/${movieId}`);
+                openReviewModal(movieData);
+            }
+
+            function handleSaveReview(button) {
+                const movieId = parseInt(button.dataset.id, 10);
+                const rating = parseInt(document.getElementById('movie-rating').value, 10);
+                const reviewText = document.getElementById('movie-review-text').value.trim();
+
+                const movieInList = watchedList.find(m => m.id === movieId);
+                
+                if (movieInList) {
+                    movieInList.rating = rating;
+                    movieInList.review = reviewText;
+                } else {
+                    const movieData = JSON.parse(button.dataset.movieData);
+                    const movieToStore = { 
+                        id: movieData.id, 
+                        title: movieData.title, 
+                        poster_path: movieData.poster_path, 
+                        release_date: movieData.release_date,
+                        rating: rating,
+                        review: reviewText,
+                        runtime: movieData.runtime,
+                        genres: movieData.genres
+                    };
+                    watchedList.unshift(movieToStore);
+                }
+                
+                saveWatchedList();
+                showToast(movieInList ? "Avaliação atualizada!" : `"${button.dataset.title}" adicionado!`, 'success');
+                renderWatchedList();
+                updateAllButtonsForMovie(movieId, true);
+                closeModal();
+            }
+
+            function handleRemoveMovie(button) {
+                const movieId = parseInt(button.dataset.id, 10);
+                const movieToRemove = watchedList.find(m => m.id === movieId);
+                if (!movieToRemove) return;
+                watchedList = watchedList.filter(movie => movie.id !== movieId);
+                saveWatchedList();
+                showToast(`"${movieToRemove.title}" removido.`, 'info');
+                renderWatchedList();
+                updateAllButtonsForMovie(movieId, false);
+            }
+            
+            async function handleEditReviewClick(button) {
+                const movieId = parseInt(button.dataset.id, 10);
+                const movieInList = watchedList.find(m => m.id === movieId);
+                const movieData = await fetchTMDB(`movie/${movieId}`);
+                openReviewModal(movieData, movieInList);
+            }
+
+            function handleCarouselScroll(button) {
+                const direction = parseInt(button.dataset.direction, 10);
+                const carouselId = button.dataset.carouselId;
+                const carousel = document.getElementById(carouselId);
+                if (!carousel) return;
+                const scrollAmount = carousel.clientWidth * 0.8;
+                carousel.scrollLeft += scrollAmount * direction;
+            }
+            
+            function renderCarousel(movies, title, id) {
+                if (!movies || movies.length === 0) return;
+                const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie)}</div>`).join('');
+                const carouselHTML = `
+                    <section class="mb-8 carousel-container relative">
+                        <h2 class="text-2xl font-bold text-white mb-4">${title}</h2>
+                        <div id="${id}" class="carousel">${movieCards}</div>
+                        <button class="scroll-btn left-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="-1" data-carousel-id="${id}"><i data-feather="chevron-left" class="w-6 h-6 pointer-events-none"></i></button>
+                        <button class="scroll-btn right-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="1" data-carousel-id="${id}"><i data-feather="chevron-right" class="w-6 h-6 pointer-events-none"></i></button>
+                    </section>`;
+                app.feedContent.innerHTML += carouselHTML;
+            }
+
+            function renderSearchResults(movies) {
+                if (movies.length === 0) { app.feedContent.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado.</p>`; return; }
+                const movieCards = movies.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join('');
+                app.feedContent.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`;
+                feather.replace();
+            }
+
+            function renderWatchedList() {
+                if (watchedList.length === 0) {
+                    app.list.placeholder.classList.remove('hidden');
+                    app.list.container.innerHTML = '';
+                } else {
+                    app.list.placeholder.classList.add('hidden');
+                    const movieCards = watchedList.map(movie => createMovieCard(movie, true)).join('');
+                    app.list.container.innerHTML = movieCards;
+                }
+                feather.replace();
+            }
+
+            function createMovieCard(movie, isWatched = false) {
+                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+                const isAlreadyAdded = watchedList.some(m => m.id === movie.id);
+                
+                let overlayContent = '';
+                if(isWatched) {
+                    const watchedMovie = watchedList.find(m => m.id === movie.id);
+                    const ratingHTML = watchedMovie && watchedMovie.rating > 0
+                        ? `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                ${watchedMovie.rating.toFixed(0)}
+                           </div>`
+                        : '';
+                    overlayContent = `
+                        ${ratingHTML}
+                        <button data-id="${movie.id}" class="remove-movie-btn absolute top-2 right-2 bg-red-600/80 hover:bg-red-700/80 p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-110 z-10"><i data-feather="trash-2" class="w-4 h-4 text-white pointer-events-none"></i></button>
+                    `;
+                } else {
+                    overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300'}" ${isAlreadyAdded ? 'disabled' : ''}>
+                           <i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4 pointer-events-none"></i> ${isAlreadyAdded ? 'Adicionado' : 'Adicionar'}
+                       </button>`;
+                }
+
+                return `
+                    <div data-id="${movie.id}" class="movie-card group relative rounded-lg overflow-hidden shadow-lg transform transition-transform hover:-translate-y-1 cursor-pointer aspect-[2/3]">
+                        <img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-2 w-full">
+                            <h3 class="text-white text-sm font-bold truncate">${movie.title}</h3>
+                            <p class="text-gray-300 text-xs">${year}</p>
+                        </div>
+                        ${overlayContent}
+                    </div>`;
+            }
+
+            function updateAllButtonsForMovie(movieId, isAdded) {
+                const buttons = document.querySelectorAll(`.add-movie-btn[data-id='${movieId}']`);
+                buttons.forEach(button => {
+                    if(isAdded) {
+                        button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Adicionado';
+                        button.disabled = true;
+                        button.classList.add('bg-gray-500/90', 'cursor-not-allowed', 'opacity-100');
+                        button.classList.remove('bg-emerald-600/90', 'hover:bg-emerald-700/90', 'opacity-0', 'group-hover:opacity-100');
+                    } else {
+                        button.innerHTML = '<i data-feather="plus" class="w-4 h-4"></i> Adicionar';
+                        button.disabled = false;
+                        button.classList.remove('bg-gray-500/90', 'cursor-not-allowed', 'opacity-100');
+                        button.classList.add('bg-emerald-600/90', 'hover:bg-emerald-700/90', 'opacity-0', 'group-hover:opacity-100');
+                    }
+                });
+                feather.replace();
+            }
+
+            function renderCarouselSkeleton(title) {
+                let skeletons = '';
+                for (let i = 0; i < 6; i++) { skeletons += `<div class="carousel-item"><div class="w-full aspect-[2/3] poster-loading rounded-lg"></div></div>`; }
+                return `<section class="mb-8"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div class="carousel">${skeletons}</div></section>`;
+            }
+             function renderGridSkeletons(count) {
+                let skeletons = '';
+                for (let i = 0; i < count; i++) { skeletons += `<div class="w-full aspect-[2/3] poster-loading rounded-lg"></div>`; }
+                return skeletons;
+            }
+            
+            async function renderStatsDashboard() {
+                const statsContainer = app.views.stats;
+                if (watchedList.length === 0) {
+                    statsContainer.innerHTML = `
+                        <div class="text-center py-16 text-gray-500">
+                            <i data-feather="bar-chart-2" class="w-16 h-16 mx-auto mb-4"></i>
+                            <p>Você ainda não adicionou filmes à sua lista.</p>
+                            <p class="text-sm">As estatísticas aparecerão aqui quando você adicionar filmes.</p>
+                        </div>
+                    `;
+                    feather.replace();
+                    return;
+                }
+
+                statsContainer.innerHTML = `<div class="text-center py-16"><i data-feather="loader" class="w-12 h-12 mx-auto animate-spin"></i><p class="mt-4">Calculando estatísticas...</p></div>`;
+                feather.replace();
+
+                let genreMinutes = {};
+                const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres);
+
+                if (moviesToUpdate.length > 0) {
+                    showToast("Atualizando dados dos filmes para as estatísticas...", "info");
+                    const promises = moviesToUpdate.map(movie => fetchTMDB(`movie/${movie.id}`));
+                    const updatedMoviesData = await Promise.all(promises);
+                    updatedMoviesData.forEach((movieData) => {
+                        const originalMovie = watchedList.find(m => m.id === movieData.id);
+                        if (originalMovie) {
+                            originalMovie.runtime = movieData.runtime;
+                            originalMovie.genres = movieData.genres;
+                        }
+                    });
+                    saveWatchedList();
+                    showToast("Dados atualizados!", "success");
+                }
+
+                watchedList.forEach(movie => {
+                    const runtime = movie.runtime ? parseInt(movie.runtime, 10) : 0;
+                    if (runtime > 0 && movie.genres) {
+                        movie.genres.forEach(genre => {
+                            if (!genreMinutes[genre.name]) genreMinutes[genre.name] = 0;
+                            genreMinutes[genre.name] += runtime;
+                        });
+                    }
+                });
+
+                if (Object.keys(genreMinutes).length === 0) {
+                    statsContainer.innerHTML = `<p class="text-center text-gray-400">Não foi possível calcular as estatísticas. Tente adicionar um filme com informações de gênero e duração.</p>`;
+                    return;
+                }
+
+                const genreStats = Object.entries(genreMinutes).map(([name, minutes]) => ({ 
+                    name, 
+                    minutes,
+                    formattedTime: formatMinutesToHoursAndMinutes(minutes)
+                }));
+                genreStats.sort((a, b) => b.minutes - a.minutes);
+
+                const maxMinutes = Math.max(...genreStats.map(g => g.minutes), 0);
+                const colors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
+
+                const chartHtml = genreStats.map((genre, index) => {
+                    const barWidth = maxMinutes > 0 ? (genre.minutes / maxMinutes) * 100 : 0;
+                    const color = colors[index % colors.length];
+                    return `
+                        <div class="mb-4 animate-fade-in" style="animation-delay: ${index * 50}ms">
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-gray-200">${genre.name}</span>
+                                <span class="text-gray-400 font-semibold">${genre.formattedTime}</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+                                <div class="h-4 rounded-full transition-all duration-500" style="width: ${barWidth}%; background-color: ${color};"></div>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                statsContainer.innerHTML = `
+                    <div class="bg-gray-800/50 p-6 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"><i data-feather="bar-chart-2"></i>Horas por Gênero</h2>
+                        <div>${chartHtml}</div>
+                    </div>`;
+                feather.replace();
+            }
+
+            async function handleCardClick(card) {
+                const movieId = card.dataset.id;
+                if(!movieId) return;
+                openModal();
+                app.modal.contentWrapper.innerHTML = `<div class="w-full h-full flex items-center justify-center p-8"><i data-feather="loader" class="w-10 h-10 text-emerald-400 animate-spin"></i></div>`;
+                feather.replace();
+                try {
+                    const movie = await fetchTMDB(`movie/${movieId}`);
+                    renderModalContent(movie);
+                } catch(error) {
+                    console.error(error);
+                    app.modal.contentWrapper.innerHTML = `<p class="text-center text-red-400 p-8">Erro ao carregar detalhes.</p>`;
+                }
+            }
+            
+            function openReviewModal(movie, existingReview = null) {
+                openModal();
+                const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=Sem+Imagem';
+                
+                app.modal.contentWrapper.innerHTML = `
+                    <button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button>
+                    <div class="w-full md:w-1/3 flex-shrink-0 hidden md:block">
+                        <img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col modal-content overflow-y-auto">
+                        <h2 class="text-2xl font-bold text-white">${movie.title}</h2>
+                        <p class="text-gray-400 text-sm mt-1 mb-4">Deixe sua avaliação:</p>
+                        
+                        <input type="hidden" id="movie-rating" value="${existingReview?.rating || 0}">
+                        <div id="star-rating-container" class="star-rating flex items-center justify-center my-4">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                        </div>
+
+                        <textarea id="movie-review-text" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" rows="4" placeholder="Escreva sua resenha (opcional)...">${existingReview?.review || ''}</textarea>
+                        
+                        <button class="save-review-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}" data-title="${movie.title}" data-movie-data='${JSON.stringify(movie)}'>
+                            Salvar Avaliação
+                        </button>
+                    </div>`;
+                setupStarRating();
+                feather.replace();
+            }
+
+            function setupStarRating() {
+                const container = document.getElementById('star-rating-container');
+                const ratingInput = document.getElementById('movie-rating');
+                if (!container || !ratingInput) return;
+
+                const stars = container.querySelectorAll('span');
+                
+                function setRatingUI(value) {
+                    ratingInput.value = value;
+                    stars.forEach(star => {
+                        star.classList.toggle('rated', star.dataset.value <= value);
+                    });
+                }
+
+                container.addEventListener('click', (event) => {
+                    const star = event.target.closest('span[data-value]');
+                    if (star) {
+                        const currentValue = parseInt(ratingInput.value, 10);
+                        const newValue = parseInt(star.dataset.value, 10);
+                        setRatingUI(currentValue === newValue ? 0 : newValue);
+                    }
+                });
+                
+                setRatingUI(parseInt(ratingInput.value, 10));
+            }
+
+            function showToast(message, type = 'info') {
+                app.toast.message.textContent = message;
+                app.toast.element.classList.remove('border-emerald-500', 'border-yellow-500', 'border-blue-500');
+                if (type === 'success') app.toast.element.classList.add('border-emerald-500');
+                else if (type === 'warning') app.toast.element.classList.add('border-yellow-500');
+                else app.toast.element.classList.add('border-blue-500');
+                app.toast.element.classList.remove('opacity-0', 'translate-y-10');
+                setTimeout(() => { app.toast.element.classList.add('opacity-0', 'translate-y-10'); }, 3000);
+            }
+            function openModal() {
+                app.modal.overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    app.modal.overlay.classList.add('opacity-100');
+                    app.modal.contentWrapper.classList.add('scale-100');
+                }, 10);
+            }
+            function closeModal() {
+                app.modal.overlay.classList.remove('opacity-100');
+                app.modal.contentWrapper.classList.remove('scale-100');
+                setTimeout(() => {
+                    app.modal.overlay.classList.add('hidden');
+                    app.modal.contentWrapper.innerHTML = '';
+                }, 300);
+            }
+            function formatRuntime(minutes) {
+                if (!minutes) return 'N/A';
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return `${hours}h ${mins}m`;
+            }
+            function formatMinutesToHoursAndMinutes(totalMinutes) {
+                if (!totalMinutes || totalMinutes <= 0) return '0m';
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = Math.round(totalMinutes % 60);
+                let result = '';
+                if (hours > 0) result += `${hours}h `;
+                if (minutes > 0) result += `${minutes}m`;
+                return result.trim() || '0m';
+            }
+            function renderModalContent(movie) {
+                const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=Sem+Imagem';
+                const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+                const runtime = formatRuntime(movie.runtime);
+                const watchedMovie = watchedList.find(m => m.id === movie.id);
+                
+                let reviewSection = `<button class="add-movie-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}">Adicionar à Minha Lista</button>`;
+                
+                if (watchedMovie) {
+                    let ratingHTML = '';
+                    if (watchedMovie.rating > 0) {
+                        ratingHTML = `<div class="flex items-center text-3xl mb-2 text-amber-400">`;
+                        for (let i = 1; i <= 5; i++) {
+                            ratingHTML += `<span>${i <= watchedMovie.rating ? '★' : '<span class="text-gray-600">★</span>'}</span>`;
+                        }
+                        ratingHTML += `</div>`;
+                    }
+
+                    reviewSection = `
+                        <div class="mt-4 pt-4 border-t border-gray-700">
+                             <h3 class="text-lg font-semibold text-white mb-2">Sua Avaliação</h3>
+                             ${ratingHTML}
+                             ${watchedMovie.review ? `<p class="text-gray-300 text-sm bg-gray-700/50 p-3 rounded-md"><em>"${watchedMovie.review}"</em></p>` : '<p class="text-gray-400 text-sm italic">Você não escreveu uma resenha.</p>'}
+                             <button class="edit-review-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}">Editar Avaliação</button>
+                        </div>
+                    `;
+                }
+
+                app.modal.contentWrapper.innerHTML = `
+                    <button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button>
+                    <div class="w-full md:w-1/3 flex-shrink-0"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div>
+                    <div class="p-6 flex-grow flex flex-col modal-content overflow-y-auto">
+                        <h2 class="text-3xl font-bold text-white">${movie.title}</h2>
+                        <div class="flex items-center gap-4 text-gray-400 text-sm mt-2 mb-4"><span>${year}</span><span>${runtime}</span></div>
+                        <div class="flex flex-wrap gap-2 mb-4">${movie.genres.map(g => `<span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">${g.name}</span>`).join('')}</div>
+                        <h3 class="text-lg font-semibold text-white mt-2 mb-2">Sinopse</h3>
+                        <p class="text-gray-300 text-sm flex-grow">${movie.overview || 'Sinopse não disponível.'}</p>
+                        ${reviewSection}
+                    </div>`;
+                
+                feather.replace();
+            }
+
+            // Inicia tudo
+            init();
+        });
+    </script>
+</body>
+</html>
