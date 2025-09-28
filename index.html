@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <!-- Ícones (Feather Icons) -->
     <script src="https://unpkg.com/feather-icons"></script>
@@ -108,16 +108,26 @@
         <main>
             <!-- Seção do Feed (antiga busca) -->
             <div id="feed-view">
-                <form id="search-form" class="flex gap-2 mb-8 max-w-lg mx-auto">
+                <form id="search-form" class="flex gap-2 mb-4 max-w-lg mx-auto">
                     <input type="text" id="search-input" placeholder="Ainda procurando algo específico?" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
                     <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
                         <i data-feather="search" class="w-5 h-5"></i>
                     </button>
                 </form>
+                
+                <div class="text-center mb-8">
+                    <button id="recommendation-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto">
+                        <i data-feather="star" class="w-5 h-5"></i>
+                        Me recomende um filme
+                    </button>
+                </div>
 
                 <!-- Container para resultados da busca e o feed -->
                 <div id="feed-content">
-                    <!-- Carrosséis serão injetados aqui -->
+                    <div id="recommendation-container" class="mb-8"></div>
+                    <div id="carousels-container">
+                        <!-- Carrosséis ou skeletons go here -->
+                    </div>
                 </div>
             </div>
 
@@ -166,13 +176,18 @@
                     stats: document.getElementById('stats-view')
                 },
                 search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
-                feedContent: document.getElementById('feed-content'),
+                carouselsContainer: document.getElementById('carousels-container'),
+                recommendation: {
+                    btn: document.getElementById('recommendation-btn'),
+                    container: document.getElementById('recommendation-container')
+                },
                 list: { container: document.getElementById('watched-list'), placeholder: document.getElementById('list-placeholder') },
                 toast: { element: document.getElementById('toast'), message: document.getElementById('toast-message') },
                 modal: { overlay: document.getElementById('movie-modal'), contentWrapper: document.getElementById('modal-content-wrapper') }
             };
             
             let watchedList = [];
+            let lastRecommendationId = null;
             
             // --- FUNÇÕES PRINCIPAIS ---
             function init() {
@@ -185,7 +200,7 @@
             }
 
             function showApiWarning() {
-                app.feedContent.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
+                app.carouselsContainer.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
             }
 
             function loadWatchedList() {
@@ -202,6 +217,7 @@
                 app.nav.list.addEventListener('click', () => switchView('list'));
                 app.nav.stats.addEventListener('click', () => switchView('stats'));
                 app.search.form.addEventListener('submit', handleSearch);
+                app.recommendation.btn.addEventListener('click', handleRecommendationRequest);
                 
                 document.querySelector('main').addEventListener('click', (event) => {
                     const addBtn = event.target.closest('.add-movie-btn');
@@ -242,6 +258,10 @@
                 if (viewName === 'stats') {
                     renderStatsDashboard();
                 }
+                 if (viewName === 'feed') {
+                    app.recommendation.container.innerHTML = '';
+                    lastRecommendationId = null;
+                }
             }
             
             async function fetchTMDB(endpoint) {
@@ -254,8 +274,9 @@
             }
 
             async function loadFeed() {
+                app.recommendation.container.innerHTML = '';
                 const currentYear = new Date().getFullYear();
-                app.feedContent.innerHTML = renderCarouselSkeleton('Destaques do Dia') 
+                app.carouselsContainer.innerHTML = renderCarouselSkeleton('Destaques do Dia') 
                                           + renderCarouselSkeleton('Destaques da Semana') 
                                           + renderCarouselSkeleton('Lançamentos') 
                                           + renderCarouselSkeleton(`Melhores de ${currentYear}`);
@@ -269,30 +290,123 @@
                         fetchTMDB(`discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=${currentYear}`)
                     ]);
                     
-                    app.feedContent.innerHTML = '';
-                    renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel');
-                    renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel');
-                    renderCarousel(releases.results, 'Lançamentos', 'releases-carousel');
-                    renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel');
+                    app.carouselsContainer.innerHTML = 
+                        renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel') +
+                        renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel') +
+                        renderCarousel(releases.results, 'Lançamentos', 'releases-carousel') +
+                        renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel');
+                    
                     feather.replace();
                 } catch (error) {
                     console.error("Erro ao carregar o feed:", error);
-                    app.feedContent.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`;
+                    app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`;
                 }
             }
             
             async function handleSearch(event) {
                 event.preventDefault();
                 const query = app.search.input.value.trim();
+                app.recommendation.container.innerHTML = '';
                 if (!query) { loadFeed(); return; }
-                app.feedContent.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`;
+                app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`;
                 try {
                     const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`);
-                    renderSearchResults(data.results);
+                    if (data.results.length === 0) {
+                        app.carouselsContainer.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado para "${query}".</p>`;
+                        return;
+                    }
+                    const movieCards = data.results.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join('');
+                    app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`;
+                    feather.replace();
                 } catch (error) {
                     console.error("Erro na busca:", error);
-                    app.feedContent.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`;
+                    app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`;
                 }
+            }
+
+            async function handleRecommendationRequest() {
+                const btn = app.recommendation.btn;
+                btn.disabled = true;
+                btn.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin"></i>Buscando recomendação...';
+                feather.replace();
+
+                try {
+                    const favoriteMovies = watchedList.filter(movie => movie.rating >= 4);
+                    if (favoriteMovies.length < 3) {
+                        showToast("Adicione e avalie pelo menos 3 filmes com 4+ estrelas para receber recomendações.", "warning");
+                        return;
+                    }
+
+                    let favoriteGenreIds = new Set();
+                    favoriteMovies.forEach(movie => {
+                        if (movie.genres) {
+                           movie.genres.forEach(genre => favoriteGenreIds.add(genre.id));
+                        }
+                    });
+                    
+                    if(favoriteGenreIds.size === 0) {
+                        await renderStatsDashboard(true); // silent update
+                        loadWatchedList();
+                        
+                        const updatedFavoriteMovies = watchedList.filter(movie => movie.rating >= 4);
+                        updatedFavoriteMovies.forEach(movie => {
+                            if (movie.genres) {
+                               movie.genres.forEach(genre => favoriteGenreIds.add(genre.id));
+                            }
+                        });
+                        
+                        if (favoriteGenreIds.size === 0) {
+                            showToast("Não foi possível identificar seus gêneros favoritos.", "warning");
+                            return; 
+                        }
+                    }
+
+                    const genreQuery = Array.from(favoriteGenreIds).join('|');
+                    const watchedIds = new Set(watchedList.map(m => m.id));
+
+                    let recommendedMovie = null;
+                    for (let page = 1; page <= 5; page++) {
+                        const data = await fetchTMDB(`discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&vote_count.gte=100&page=${page}`);
+                        const potentialMovies = data.results.filter(movie => 
+                            !watchedIds.has(movie.id) && movie.id !== lastRecommendationId
+                        );
+                        if (potentialMovies.length > 0) {
+                            recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
+                            break;
+                        }
+                    }
+
+                    if (recommendedMovie) {
+                        lastRecommendationId = recommendedMovie.id; // Salva o ID da recomendação atual
+                        renderRecommendation(recommendedMovie);
+                    } else {
+                        showToast("Não encontramos uma nova recomendação no momento. Tente mais tarde!", "info");
+                        lastRecommendationId = null; // Reseta se não encontrar nada
+                    }
+
+                } catch (error) {
+                    console.error("Erro ao gerar recomendação:", error);
+                    showToast("Ocorreu um erro ao buscar sua recomendação.", "error");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-feather="star" class="w-5 h-5"></i> Me recomende um filme';
+                    feather.replace();
+                }
+            }
+            
+            function renderRecommendation(movie) {
+                const container = app.recommendation.container;
+                const movieCardHTML = createMovieCard(movie, false);
+                container.innerHTML = `
+                    <section class="mb-8 animate-fade-in">
+                        <h2 class="text-2xl font-bold text-white mb-4">Recomendado para Você</h2>
+                        <div class="max-w-xs">
+                           ${movieCardHTML}
+                        </div>
+                    </section>
+                `;
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                feather.replace();
             }
 
             async function handleAddMovieClick(button) {
@@ -361,23 +475,15 @@
             }
             
             function renderCarousel(movies, title, id) {
-                if (!movies || movies.length === 0) return;
+                if (!movies || movies.length === 0) return '';
                 const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie)}</div>`).join('');
-                const carouselHTML = `
+                return `
                     <section class="mb-8 carousel-container relative">
                         <h2 class="text-2xl font-bold text-white mb-4">${title}</h2>
                         <div id="${id}" class="carousel">${movieCards}</div>
                         <button class="scroll-btn left-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="-1" data-carousel-id="${id}"><i data-feather="chevron-left" class="w-6 h-6 pointer-events-none"></i></button>
                         <button class="scroll-btn right-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="1" data-carousel-id="${id}"><i data-feather="chevron-right" class="w-6 h-6 pointer-events-none"></i></button>
                     </section>`;
-                app.feedContent.innerHTML += carouselHTML;
-            }
-
-            function renderSearchResults(movies) {
-                if (movies.length === 0) { app.feedContent.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado.</p>`; return; }
-                const movieCards = movies.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join('');
-                app.feedContent.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`;
-                feather.replace();
             }
 
             function renderWatchedList() {
@@ -457,9 +563,10 @@
                 return skeletons;
             }
             
-            async function renderStatsDashboard() {
+            async function renderStatsDashboard(silent = false) {
                 const statsContainer = app.views.stats;
                 if (watchedList.length === 0) {
+                    if (silent) return;
                     statsContainer.innerHTML = `
                         <div class="text-center py-16 text-gray-500">
                             <i data-feather="bar-chart-2" class="w-16 h-16 mx-auto mb-4"></i>
@@ -470,15 +577,17 @@
                     feather.replace();
                     return;
                 }
-
-                statsContainer.innerHTML = `<div class="text-center py-16"><i data-feather="loader" class="w-12 h-12 mx-auto animate-spin"></i><p class="mt-4">Calculando estatísticas...</p></div>`;
-                feather.replace();
+                
+                if (!silent) {
+                    statsContainer.innerHTML = `<div class="text-center py-16"><i data-feather="loader" class="w-12 h-12 mx-auto animate-spin"></i><p class="mt-4">Calculando estatísticas...</p></div>`;
+                    feather.replace();
+                }
 
                 let genreMinutes = {};
                 const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres);
 
                 if (moviesToUpdate.length > 0) {
-                    showToast("Atualizando dados dos filmes para as estatísticas...", "info");
+                    if (!silent) showToast("Atualizando dados dos filmes para as estatísticas...", "info");
                     const promises = moviesToUpdate.map(movie => fetchTMDB(`movie/${movie.id}`));
                     const updatedMoviesData = await Promise.all(promises);
                     updatedMoviesData.forEach((movieData) => {
@@ -489,7 +598,7 @@
                         }
                     });
                     saveWatchedList();
-                    showToast("Dados atualizados!", "success");
+                    if (!silent) showToast("Dados atualizados!", "success");
                 }
 
                 watchedList.forEach(movie => {
@@ -501,6 +610,8 @@
                         });
                     }
                 });
+                
+                if (silent) return;
 
                 if (Object.keys(genreMinutes).length === 0) {
                     statsContainer.innerHTML = `<p class="text-center text-gray-400">Não foi possível calcular as estatísticas. Tente adicionar um filme com informações de gênero e duração.</p>`;
@@ -564,7 +675,7 @@
                     <div class="w-full md:w-1/3 flex-shrink-0 hidden md:block">
                         <img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover">
                     </div>
-                    <div class="p-6 flex-grow flex flex-col modal-content overflow-y-auto">
+                    <div class="p-6 flex-grow flex flex-col modal-content">
                         <h2 class="text-2xl font-bold text-white">${movie.title}</h2>
                         <p class="text-gray-400 text-sm mt-1 mb-4">Deixe sua avaliação:</p>
                         
@@ -615,12 +726,13 @@
 
             function showToast(message, type = 'info') {
                 app.toast.message.textContent = message;
-                app.toast.element.classList.remove('border-emerald-500', 'border-yellow-500', 'border-blue-500');
+                app.toast.element.classList.remove('border-emerald-500', 'border-yellow-500', 'border-blue-500', 'border-red-500');
                 if (type === 'success') app.toast.element.classList.add('border-emerald-500');
                 else if (type === 'warning') app.toast.element.classList.add('border-yellow-500');
+                else if (type === 'error') app.toast.element.classList.add('border-red-500');
                 else app.toast.element.classList.add('border-blue-500');
                 app.toast.element.classList.remove('opacity-0', 'translate-y-10');
-                setTimeout(() => { app.toast.element.classList.add('opacity-0', 'translate-y-10'); }, 3000);
+                setTimeout(() => { app.toast.element.classList.add('opacity-0', 'translate-y-10'); }, 4000);
             }
             function openModal() {
                 document.body.style.overflow = 'hidden';
@@ -683,7 +795,7 @@
                 app.modal.contentWrapper.innerHTML = `
                     <button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button>
                     <div class="w-full md:w-1/3 flex-shrink-0"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div>
-                    <div class="p-6 flex-grow flex flex-col modal-content overflow-y-auto">
+                    <div class="p-6 flex-grow flex flex-col modal-content">
                         <h2 class="text-3xl font-bold text-white">${movie.title}</h2>
                         <div class="flex items-center gap-4 text-gray-400 text-sm mt-2 mb-4"><span>${year}</span><span>${runtime}</span></div>
                         <div class="flex flex-wrap gap-2 mb-4">${movie.genres.map(g => `<span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">${g.name}</span>`).join('')}</div>
