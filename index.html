@@ -257,10 +257,9 @@
 
                 if (viewName === 'stats') {
                     renderStatsDashboard();
-                }
-                 if (viewName === 'feed') {
-                    app.recommendation.container.innerHTML = '';
-                    lastRecommendationId = null;
+                } else if (viewName === 'feed') {
+                    app.search.input.value = '';
+                    loadFeed();
                 }
             }
             
@@ -275,6 +274,7 @@
 
             async function loadFeed() {
                 app.recommendation.container.innerHTML = '';
+                lastRecommendationId = null;
                 const currentYear = new Date().getFullYear();
                 app.carouselsContainer.innerHTML = renderCarouselSkeleton('Destaques do Dia') 
                                           + renderCarouselSkeleton('Destaques da Semana') 
@@ -307,7 +307,10 @@
                 event.preventDefault();
                 const query = app.search.input.value.trim();
                 app.recommendation.container.innerHTML = '';
-                if (!query) { loadFeed(); return; }
+                if (!query) { 
+                    loadFeed(); 
+                    return; 
+                }
                 app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`;
                 try {
                     const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`);
@@ -327,61 +330,58 @@
             async function handleRecommendationRequest() {
                 const btn = app.recommendation.btn;
                 btn.disabled = true;
-                btn.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin"></i>Buscando recomendação...';
+                btn.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin"></i>Analisando seu gosto...';
                 feather.replace();
 
                 try {
                     const favoriteMovies = watchedList.filter(movie => movie.rating >= 4);
                     if (favoriteMovies.length < 3) {
-                        showToast("Adicione e avalie pelo menos 3 filmes com 4+ estrelas para receber recomendações.", "warning");
+                        showToast("Avalie pelo menos 3 filmes com 4+ estrelas para receber recomendações.", "warning");
                         return;
                     }
 
-                    let favoriteGenreIds = new Set();
-                    favoriteMovies.forEach(movie => {
-                        if (movie.genres) {
-                           movie.genres.forEach(genre => favoriteGenreIds.add(genre.id));
-                        }
-                    });
-                    
-                    if(favoriteGenreIds.size === 0) {
-                        await renderStatsDashboard(true); // silent update
-                        loadWatchedList();
-                        
-                        const updatedFavoriteMovies = watchedList.filter(movie => movie.rating >= 4);
-                        updatedFavoriteMovies.forEach(movie => {
-                            if (movie.genres) {
-                               movie.genres.forEach(genre => favoriteGenreIds.add(genre.id));
-                            }
-                        });
-                        
-                        if (favoriteGenreIds.size === 0) {
-                            showToast("Não foi possível identificar seus gêneros favoritos.", "warning");
-                            return; 
-                        }
-                    }
-
-                    const genreQuery = Array.from(favoriteGenreIds).join('|');
                     const watchedIds = new Set(watchedList.map(m => m.id));
+                    const seedMovie = favoriteMovies[Math.floor(Math.random() * favoriteMovies.length)];
+                    
+                    const data = await fetchTMDB(`movie/${seedMovie.id}/recommendations`);
+                    let potentialMovies = data.results.filter(movie => 
+                        !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path
+                    );
 
                     let recommendedMovie = null;
-                    for (let page = 1; page <= 5; page++) {
-                        const data = await fetchTMDB(`discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&vote_count.gte=100&page=${page}`);
-                        const potentialMovies = data.results.filter(movie => 
-                            !watchedIds.has(movie.id) && movie.id !== lastRecommendationId
+
+                    if (potentialMovies.length > 0) {
+                        recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
+                    } else {
+                        showToast("Buscando de forma mais ampla...", "info");
+                         if (!seedMovie.genres) {
+                            await renderStatsDashboard(true);
+                            loadWatchedList();
+                            const updatedSeedMovie = watchedList.find(m => m.id === seedMovie.id);
+                            if (!updatedSeedMovie || !updatedSeedMovie.genres) {
+                                showToast("Não foi possível identificar o gênero do seu filme favorito.", "warning");
+                                return;
+                            }
+                            seedMovie.genres = updatedSeedMovie.genres;
+                        }
+
+                        const genreQuery = seedMovie.genres.map(g => g.id).join('|');
+                        const fallbackData = await fetchTMDB(`discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&vote_count.gte=100`);
+                        potentialMovies = fallbackData.results.filter(movie => 
+                            !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path
                         );
-                        if (potentialMovies.length > 0) {
-                            recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
-                            break;
+                        
+                        if(potentialMovies.length > 0) {
+                           recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
                         }
                     }
 
                     if (recommendedMovie) {
-                        lastRecommendationId = recommendedMovie.id; // Salva o ID da recomendação atual
-                        renderRecommendation(recommendedMovie);
+                        lastRecommendationId = recommendedMovie.id;
+                        renderRecommendation(recommendedMovie, seedMovie);
                     } else {
                         showToast("Não encontramos uma nova recomendação no momento. Tente mais tarde!", "info");
-                        lastRecommendationId = null; // Reseta se não encontrar nada
+                        lastRecommendationId = null;
                     }
 
                 } catch (error) {
@@ -394,12 +394,13 @@
                 }
             }
             
-            function renderRecommendation(movie) {
+            function renderRecommendation(movie, seedMovie) {
                 const container = app.recommendation.container;
                 const movieCardHTML = createMovieCard(movie, false);
                 container.innerHTML = `
                     <section class="mb-8 animate-fade-in">
-                        <h2 class="text-2xl font-bold text-white mb-4">Recomendado para Você</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">Recomendado para Você</h2>
+                        <p class="text-purple-300 text-sm mb-4">Porque você gostou de <span class="font-bold">${seedMovie.title}</span>...</p>
                         <div class="max-w-xs">
                            ${movieCardHTML}
                         </div>
@@ -583,9 +584,7 @@
                     feather.replace();
                 }
 
-                let genreMinutes = {};
                 const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres);
-
                 if (moviesToUpdate.length > 0) {
                     if (!silent) showToast("Atualizando dados dos filmes para as estatísticas...", "info");
                     const promises = moviesToUpdate.map(movie => fetchTMDB(`movie/${movie.id}`));
@@ -600,51 +599,68 @@
                     saveWatchedList();
                     if (!silent) showToast("Dados atualizados!", "success");
                 }
+                
+                if (silent) return;
 
+                const totalMoviesWatched = watchedList.length;
+                const totalMinutesWatched = watchedList.reduce((total, movie) => total + (parseInt(movie.runtime, 10) || 0), 0);
+                const formattedTotalTime = formatMinutesToHoursAndMinutes(totalMinutesWatched);
+
+                const statsCardsHtml = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <div class="bg-gray-800/50 p-6 rounded-lg text-center transform transition-transform hover:scale-105">
+                            <i data-feather="film" class="w-10 h-10 mx-auto text-emerald-400 mb-3"></i>
+                            <p class="text-4xl font-extrabold text-white">${totalMoviesWatched}</p>
+                            <p class="text-sm text-gray-400 font-medium uppercase tracking-wider mt-1">Filmes Assistidos</p>
+                        </div>
+                        <div class="bg-gray-800/50 p-6 rounded-lg text-center transform transition-transform hover:scale-105">
+                            <i data-feather="clock" class="w-10 h-10 mx-auto text-purple-400 mb-3"></i>
+                            <p class="text-4xl font-extrabold text-white">${formattedTotalTime}</p>
+                            <p class="text-sm text-gray-400 font-medium uppercase tracking-wider mt-1">Tempo Total</p>
+                        </div>
+                    </div>
+                `;
+
+                let genreMinutes = {};
                 watchedList.forEach(movie => {
-                    const runtime = movie.runtime ? parseInt(movie.runtime, 10) : 0;
-                    if (runtime > 0 && movie.genres) {
+                    if (movie.runtime && movie.genres) {
                         movie.genres.forEach(genre => {
                             if (!genreMinutes[genre.name]) genreMinutes[genre.name] = 0;
-                            genreMinutes[genre.name] += runtime;
+                            genreMinutes[genre.name] += (parseInt(movie.runtime, 10) || 0);
                         });
                     }
                 });
                 
-                if (silent) return;
+                let chartHtml = '<p class="text-center text-gray-400">Sem dados de gênero para exibir.</p>';
+                if (Object.keys(genreMinutes).length > 0) {
+                    const genreStats = Object.entries(genreMinutes).map(([name, minutes]) => ({ 
+                        name, 
+                        minutes,
+                        formattedTime: formatMinutesToHoursAndMinutes(minutes)
+                    }));
+                    genreStats.sort((a, b) => b.minutes - a.minutes);
 
-                if (Object.keys(genreMinutes).length === 0) {
-                    statsContainer.innerHTML = `<p class="text-center text-gray-400">Não foi possível calcular as estatísticas. Tente adicionar um filme com informações de gênero e duração.</p>`;
-                    return;
+                    const maxMinutes = Math.max(...genreStats.map(g => g.minutes), 0);
+                    const colors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
+
+                    chartHtml = genreStats.map((genre, index) => {
+                        const barWidth = maxMinutes > 0 ? (genre.minutes / maxMinutes) * 100 : 0;
+                        const color = colors[index % colors.length];
+                        return `
+                            <div class="mb-4 animate-fade-in" style="animation-delay: ${index * 50}ms">
+                                <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                    <span class="text-gray-200">${genre.name}</span>
+                                    <span class="text-gray-400 font-semibold">${genre.formattedTime}</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
+                                    <div class="h-4 rounded-full transition-all duration-500" style="width: ${barWidth}%; background-color: ${color};"></div>
+                                </div>
+                            </div>`;
+                    }).join('');
                 }
 
-                const genreStats = Object.entries(genreMinutes).map(([name, minutes]) => ({ 
-                    name, 
-                    minutes,
-                    formattedTime: formatMinutesToHoursAndMinutes(minutes)
-                }));
-                genreStats.sort((a, b) => b.minutes - a.minutes);
-
-                const maxMinutes = Math.max(...genreStats.map(g => g.minutes), 0);
-                const colors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
-
-                const chartHtml = genreStats.map((genre, index) => {
-                    const barWidth = maxMinutes > 0 ? (genre.minutes / maxMinutes) * 100 : 0;
-                    const color = colors[index % colors.length];
-                    return `
-                        <div class="mb-4 animate-fade-in" style="animation-delay: ${index * 50}ms">
-                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
-                                <span class="text-gray-200">${genre.name}</span>
-                                <span class="text-gray-400 font-semibold">${genre.formattedTime}</span>
-                            </div>
-                            <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
-                                <div class="h-4 rounded-full transition-all duration-500" style="width: ${barWidth}%; background-color: ${color};"></div>
-                            </div>
-                        </div>`;
-                }).join('');
-
-                statsContainer.innerHTML = `
-                    <div class="bg-gray-800/50 p-6 rounded-lg shadow-lg">
+                statsContainer.innerHTML = statsCardsHtml + `
+                    <div class="bg-gray-800/50 p-6 rounded-lg shadow-lg mt-8">
                         <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"><i data-feather="bar-chart-2"></i>Horas por Gênero</h2>
                         <div>${chartHtml}</div>
                     </div>`;
