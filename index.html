@@ -86,67 +86,115 @@
 </head>
 <body class="antialiased">
 
-    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Cabeçalho -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
-                <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
-                CineLog
-            </h1>
-            <p class="text-gray-400 mt-2">Seu diário pessoal de filmes.</p>
-        </header>
+    <!-- Container da Aplicação -->
+    <div id="app-container">
 
-        <!-- Navegação -->
-        <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-md mx-auto">
-            <button id="nav-feed" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
-            <button id="nav-list" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
-            <button id="nav-stats" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
-        </nav>
-        
-        <!-- Conteúdo principal que alterna entre feed e lista -->
-        <main>
-            <!-- Seção do Feed (antiga busca) -->
-            <div id="feed-view">
-                <form id="search-form" class="flex gap-2 mb-4 max-w-lg mx-auto">
-                    <input type="text" id="search-input" placeholder="Ainda procurando algo específico?" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
-                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
-                        <i data-feather="search" class="w-5 h-5"></i>
-                    </button>
-                </form>
+        <!-- Tela de Autenticação -->
+        <div id="auth-view" class="min-h-screen flex flex-col items-center justify-center p-4">
+             <div class="w-full max-w-md">
+                <header class="text-center mb-8">
+                    <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
+                        <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
+                        CineLog
+                    </h1>
+                    <p class="text-gray-400 mt-2">Seu diário de filmes, agora na nuvem.</p>
+                </header>
                 
-                <div class="text-center mb-8">
-                    <button id="recommendation-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto">
-                        <i data-feather="star" class="w-5 h-5"></i>
-                        Me recomende um filme
-                    </button>
-                </div>
+                <!-- Formulário de Login -->
+                <form id="login-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Login</h2>
+                    <div class="mb-4">
+                        <label for="login-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="login-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
+                        <input type="password" id="login-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors">Entrar</button>
+                    <p class="text-center text-gray-400 text-sm mt-4">
+                        Não tem uma conta? <a href="#" id="show-register-link" class="font-bold text-emerald-400 hover:underline">Cadastre-se</a>
+                    </p>
+                </form>
 
-                <!-- Container para resultados da busca e o feed -->
-                <div id="feed-content">
-                    <div id="recommendation-container" class="mb-8"></div>
-                    <div id="carousels-container">
-                        <!-- Carrosséis ou skeletons go here -->
+                <!-- Formulário de Cadastro -->
+                <form id="register-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Cadastro</h2>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="register-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
+                        <input type="password" id="register-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">Criar Conta</button>
+                    <p class="text-center text-gray-400 text-sm mt-4">
+                        Já tem uma conta? <a href="#" id="show-login-link" class="font-bold text-emerald-400 hover:underline">Faça Login</a>
+                    </p>
+                </form>
+                 <div id="auth-loading" class="text-center py-16 hidden">
+                    <i data-feather="loader" class="w-12 h-12 mx-auto animate-spin text-emerald-400"></i>
+                    <p class="mt-4 text-gray-400">Autenticando...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal da Aplicação -->
+        <div id="app-content" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <header class="text-center mb-8">
+                 <div class="flex justify-center items-center gap-4 mb-2">
+                    <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
+                        <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
+                        CineLog
+                    </h1>
+                </div>
+                <div id="user-info" class="text-center">
+                    <span id="user-email" class="text-gray-400 text-sm"></span>
+                    <button id="logout-btn" class="ml-4 text-red-400 hover:text-red-300 text-sm font-bold">(Sair)</button>
+                </div>
+            </header>
+
+            <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-md mx-auto">
+                <button id="nav-feed" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
+                <button id="nav-list" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
+                <button id="nav-stats" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+            </nav>
+            
+            <main>
+                <div id="feed-view">
+                    <form id="search-form" class="flex gap-2 mb-4 max-w-lg mx-auto">
+                        <input type="text" id="search-input" placeholder="Ainda procurando algo específico?" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
+                            <i data-feather="search" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="text-center mb-8">
+                        <button id="recommendation-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto">
+                            <i data-feather="star" class="w-5 h-5"></i>
+                            Me recomende um filme
+                        </button>
+                    </div>
+
+                    <div id="feed-content">
+                        <div id="recommendation-container" class="mb-8"></div>
+                        <div id="carousels-container"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Seção da Lista de Assistidos -->
-            <div id="list-view" class="hidden">
-                <div id="watched-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    <!-- Filmes assistidos aparecerão aqui -->
+                <div id="list-view" class="hidden">
+                    <div id="watched-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+                    <div id="list-placeholder" class="hidden text-center py-16 text-gray-500">
+                        <i data-feather="list" class="w-16 h-16 mx-auto mb-4"></i>
+                        <p>Sua lista de filmes assistidos está vazia.</p>
+                    </div>
                 </div>
-                <div id="list-placeholder" class="hidden text-center py-16 text-gray-500">
-                    <i data-feather="list" class="w-16 h-16 mx-auto mb-4"></i>
-                    <p>Sua lista de filmes assistidos está vazia.</p>
-                </div>
-            </div>
 
-            <!-- Seção de Estatísticas -->
-            <div id="stats-view" class="hidden max-w-4xl mx-auto">
-                <!-- Dashboard será injetado aqui -->
-            </div>
-        </main>
+                <div id="stats-view" class="hidden max-w-4xl mx-auto"></div>
+            </main>
+        </div>
     </div>
 
     <!-- Modal de Detalhes do Filme / Review -->
@@ -159,12 +207,51 @@
         <p id="toast-message"></p>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const TMDB_API_KEY = '5e264941432a0e290b364a1636205f1b';
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+        import { 
+            getFirestore,
+            collection,
+            addDoc,
+            query,
+            onSnapshot,
+            doc,
+            deleteDoc,
+            setDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-            // Elementos da UI
-            const app = {
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyClR7hw8ajlqmG9Z1oyj6lGGSPvdVQKDS0",
+            authDomain: "cinelog-6581e.firebaseapp.com",
+            projectId: "cinelog-6581e",
+            storageBucket: "cinelog-6581e.appspot.com",
+            messagingSenderId: "271518462919",
+            appId: "1:271518462919:web:cb1157247cf6aacf3ddfe2",
+            measurementId: "G-X9VCTESTEW"
+        };
+
+        // Initialize Firebase
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
+        const analytics = getAnalytics(firebaseApp);
+
+        const TMDB_API_KEY = '5e264941432a0e290b364a1636205f1b';
+        
+        // --- O restante do seu script JS virá aqui ---
+        const app = {
                 nav: { 
                     feed: document.getElementById('nav-feed'), 
                     list: document.getElementById('nav-list'),
@@ -175,6 +262,17 @@
                     list: document.getElementById('list-view'),
                     stats: document.getElementById('stats-view')
                 },
+                auth: {
+                    view: document.getElementById('auth-view'),
+                    loading: document.getElementById('auth-loading'),
+                    loginForm: document.getElementById('login-form'),
+                    registerForm: document.getElementById('register-form'),
+                    showLoginLink: document.getElementById('show-login-link'),
+                    showRegisterLink: document.getElementById('show-register-link'),
+                    logoutBtn: document.getElementById('logout-btn'),
+                    userEmail: document.getElementById('user-email')
+                },
+                appContent: document.getElementById('app-content'),
                 search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
                 carouselsContainer: document.getElementById('carousels-container'),
                 recommendation: {
@@ -188,13 +286,64 @@
             
             let watchedList = [];
             let lastRecommendationId = null;
+            let currentUser = null;
+            let unsubscribeFromWatchedList = null; // Para parar de ouvir as atualizações ao fazer logout
             
-            // --- FUNÇÕES PRINCIPAIS ---
-            function init() {
+            // --- FUNÇÕES PRINCIPAIS E DE AUTENTICAÇÃO ---
+
+            function initAuth() {
+                setupAuthEventListeners(); // FIX: Attach auth form listeners immediately
+                app.auth.loading.classList.remove('hidden');
+                app.auth.loginForm.classList.add('hidden');
+                app.auth.registerForm.classList.add('hidden');
+
+                onAuthStateChanged(auth, user => {
+                    app.auth.loading.classList.add('hidden');
+                    if (user) {
+                        // Usuário está logado
+                        currentUser = user;
+                        app.auth.view.classList.add('hidden');
+                        app.appContent.classList.remove('hidden');
+                        app.auth.userEmail.textContent = user.email;
+                        
+                        setupRealtimeListener(user.uid);
+                        initApp();
+                    } else {
+                        // Usuário está deslogado
+                        currentUser = null;
+                        app.appContent.classList.add('hidden');
+                        app.auth.view.classList.remove('hidden');
+                        app.auth.loginForm.classList.remove('hidden');
+
+                        if (unsubscribeFromWatchedList) {
+                            unsubscribeFromWatchedList(); // Para de ouvir a lista antiga
+                        }
+                        watchedList = [];
+                        renderWatchedList();
+                    }
+                });
+            }
+
+            function setupRealtimeListener(userId) {
+                if (unsubscribeFromWatchedList) {
+                    unsubscribeFromWatchedList();
+                }
+                const watchedMoviesRef = collection(db, 'users', userId, 'watchedMovies');
+                const q = query(watchedMoviesRef);
+
+                unsubscribeFromWatchedList = onSnapshot(q, (snapshot) => {
+                    watchedList = snapshot.docs.map(doc => ({...doc.data(), docId: doc.id }));
+                    renderWatchedList();
+                    // Se estiver na tela de estatísticas, atualiza
+                    if (!app.views.stats.classList.contains('hidden')) {
+                        renderStatsDashboard();
+                    }
+                });
+            }
+
+            function initApp() {
                 if (!TMDB_API_KEY) showApiWarning();
-                loadWatchedList();
-                setupEventListeners();
-                renderWatchedList();
+                setupAppEventListeners(); // FIX: Listeners for the main app
                 loadFeed();
                 feather.replace();
             }
@@ -203,19 +352,26 @@
                 app.carouselsContainer.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
             }
 
-            function loadWatchedList() {
-                const storedList = localStorage.getItem('watchedMovieList');
-                watchedList = storedList ? JSON.parse(storedList) : [];
+            function setupAuthEventListeners() {
+                app.auth.loginForm.addEventListener('submit', handleLogin);
+                app.auth.registerForm.addEventListener('submit', handleRegister);
+                app.auth.showRegisterLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    app.auth.loginForm.classList.add('hidden');
+                    app.auth.registerForm.classList.remove('hidden');
+                });
+                 app.auth.showLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    app.auth.registerForm.classList.add('hidden');
+                    app.auth.loginForm.classList.remove('hidden');
+                });
             }
 
-            function saveWatchedList() {
-                localStorage.setItem('watchedMovieList', JSON.stringify(watchedList));
-            }
-
-            function setupEventListeners() {
+            function setupAppEventListeners() {
                 app.nav.feed.addEventListener('click', () => switchView('feed'));
                 app.nav.list.addEventListener('click', () => switchView('list'));
                 app.nav.stats.addEventListener('click', () => switchView('stats'));
+                app.auth.logoutBtn.addEventListener('click', handleLogout);
                 app.search.form.addEventListener('submit', handleSearch);
                 app.recommendation.btn.addEventListener('click', handleRecommendationRequest);
                 
@@ -242,6 +398,51 @@
                     if (editReviewBtn) handleEditReviewClick(editReviewBtn);
                     if (addBtn) handleAddMovieClick(addBtn);
                 });
+            }
+
+            async function handleLogin(e) {
+                e.preventDefault();
+                const email = app.auth.loginForm.querySelector('#login-email').value;
+                const password = app.auth.loginForm.querySelector('#login-password').value;
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    console.error("Erro no login:", error.code);
+                    let message = 'Ocorreu um erro ao tentar fazer login.';
+                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        message = 'E-mail ou senha incorretos. Verifique e tente novamente.';
+                    }
+                    showToast(message, 'error');
+                }
+            }
+
+            async function handleRegister(e) {
+                e.preventDefault();
+                const email = app.auth.registerForm.querySelector('#register-email').value;
+                const password = app.auth.registerForm.querySelector('#register-password').value;
+                 try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    console.error("Erro no cadastro:", error.code);
+                    let message = 'Ocorreu um erro ao tentar criar a conta.';
+                    if (error.code === 'auth/email-already-in-use') {
+                        message = 'Este e-mail já está cadastrado.';
+                    } else if (error.code === 'auth/weak-password') {
+                        message = 'A senha precisa ter pelo menos 6 caracteres.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        message = 'O formato do e-mail é inválido.';
+                    }
+                    showToast(message, 'error');
+                }
+            }
+
+            async function handleLogout() {
+                try {
+                    await signOut(auth);
+                } catch (error) {
+                    console.error("Erro no logout:", error);
+                     showToast(`Erro: ${error.message}`, 'error');
+                }
             }
 
             function switchView(viewName) {
@@ -416,47 +617,68 @@
                 openReviewModal(movieData);
             }
 
-            function handleSaveReview(button) {
+            async function handleSaveReview(button) {
+                if (!currentUser) {
+                    showToast("Você precisa estar logado para salvar filmes.", "error");
+                    return;
+                }
                 const movieId = parseInt(button.dataset.id, 10);
                 const rating = parseInt(document.getElementById('movie-rating').value, 10);
                 const reviewText = document.getElementById('movie-review-text').value.trim();
 
                 const movieInList = watchedList.find(m => m.id === movieId);
                 
-                if (movieInList) {
-                    movieInList.rating = rating;
-                    movieInList.review = reviewText;
-                } else {
-                    const movieData = JSON.parse(button.dataset.movieData);
-                    const movieToStore = { 
-                        id: movieData.id, 
-                        title: movieData.title, 
-                        poster_path: movieData.poster_path, 
-                        release_date: movieData.release_date,
-                        rating: rating,
-                        review: reviewText,
-                        runtime: movieData.runtime,
-                        genres: movieData.genres
-                    };
-                    watchedList.unshift(movieToStore);
+                const movieData = JSON.parse(button.dataset.movieData);
+                const movieToStore = { 
+                    id: movieData.id, 
+                    title: movieData.title, 
+                    poster_path: movieData.poster_path, 
+                    release_date: movieData.release_date,
+                    rating: rating,
+                    review: reviewText,
+                    runtime: movieData.runtime,
+                    genres: movieData.genres,
+                    addedAt: serverTimestamp()
+                };
+
+                try {
+                    const collectionRef = collection(db, 'users', currentUser.uid, 'watchedMovies');
+                    if (movieInList && movieInList.docId) {
+                        // Editando - usa setDoc com o docId
+                        const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieInList.docId);
+                        await setDoc(docRef, movieToStore, { merge: true }); // merge para não sobrescrever o addedAt
+                        showToast("Avaliação atualizada!", 'success');
+                    } else {
+                        // Adicionando
+                        await addDoc(collectionRef, movieToStore);
+                        showToast(`"${movieToStore.title}" adicionado!`, 'success');
+                    }
+                    updateAllButtonsForMovie(movieId, true);
+                    closeModal();
+                } catch (error) {
+                    console.error("Erro ao salvar no Firestore:", error);
+                    showToast("Erro ao salvar. Tente novamente.", 'error');
                 }
-                
-                saveWatchedList();
-                showToast(movieInList ? "Avaliação atualizada!" : `"${button.dataset.title}" adicionado!`, 'success');
-                renderWatchedList();
-                updateAllButtonsForMovie(movieId, true);
-                closeModal();
             }
 
-            function handleRemoveMovie(button) {
+            async function handleRemoveMovie(button) {
+                if (!currentUser) {
+                    showToast("Você precisa estar logado.", "error");
+                    return;
+                }
                 const movieId = parseInt(button.dataset.id, 10);
                 const movieToRemove = watchedList.find(m => m.id === movieId);
-                if (!movieToRemove) return;
-                watchedList = watchedList.filter(movie => movie.id !== movieId);
-                saveWatchedList();
-                showToast(`"${movieToRemove.title}" removido.`, 'info');
-                renderWatchedList();
-                updateAllButtonsForMovie(movieId, false);
+                if (!movieToRemove || !movieToRemove.docId) return;
+
+                try {
+                    const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieToRemove.docId);
+                    await deleteDoc(docRef);
+                    showToast(`"${movieToRemove.title}" removido.`, 'info');
+                    // O onSnapshot vai atualizar a UI automaticamente
+                } catch (error) {
+                    console.error("Erro ao remover do Firestore:", error);
+                    showToast("Erro ao remover. Tente novamente.", 'error');
+                }
             }
             
             async function handleEditReviewClick(button) {
@@ -496,6 +718,12 @@
                     const movieCards = watchedList.map(movie => createMovieCard(movie, true)).join('');
                     app.list.container.innerHTML = movieCards;
                 }
+                // Atualiza todos os botões no feed para refletir o estado da lista
+                document.querySelectorAll('.add-movie-btn').forEach(btn => {
+                    const movieId = parseInt(btn.dataset.id, 10);
+                    const isAdded = watchedList.some(m => m.id === movieId);
+                    updateAllButtonsForMovie(movieId, isAdded);
+                });
                 feather.replace();
             }
 
@@ -587,17 +815,19 @@
                 const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres);
                 if (moviesToUpdate.length > 0) {
                     if (!silent) showToast("Atualizando dados dos filmes para as estatísticas...", "info");
-                    const promises = moviesToUpdate.map(movie => fetchTMDB(`movie/${movie.id}`));
-                    const updatedMoviesData = await Promise.all(promises);
-                    updatedMoviesData.forEach((movieData) => {
-                        const originalMovie = watchedList.find(m => m.id === movieData.id);
-                        if (originalMovie) {
-                            originalMovie.runtime = movieData.runtime;
-                            originalMovie.genres = movieData.genres;
+                    
+                    for (const movie of moviesToUpdate) {
+                        try {
+                           const movieData = await fetchTMDB(`movie/${movie.id}`);
+                           const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movie.docId);
+                           await setDoc(docRef, { runtime: movieData.runtime, genres: movieData.genres }, { merge: true });
+                        } catch(error) {
+                            console.error(`Falha ao atualizar dados para o filme ID: ${movie.id}`, error);
                         }
-                    });
-                    saveWatchedList();
+                    }
                     if (!silent) showToast("Dados atualizados!", "success");
+                    // O onSnapshot irá pegar as mudanças e re-renderizar
+                    return;
                 }
                 
                 if (silent) return;
@@ -824,10 +1054,7 @@
             }
 
             // Inicia tudo
-            init();
-        });
+            initAuth();
     </script>
 </body>
 </html>
-
-
