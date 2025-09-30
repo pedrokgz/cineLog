@@ -203,13 +203,12 @@
     </div>
 
     <!-- Notificação Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 border border-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 translate-y-10 transition-all duration-300 z-50">
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 border border-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 translate-y-10 transition-all duration-300 z-[60]">
         <p id="toast-message"></p>
     </div>
 
     <!-- Firebase SDKs -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
         import { 
@@ -231,7 +230,6 @@
             serverTimestamp
         } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyClR7hw8ajlqmG9Z1oyj6lGGSPvdVQKDS0",
             authDomain: "cinelog-6581e.firebaseapp.com",
@@ -242,7 +240,6 @@
             measurementId: "G-X9VCTESTEW"
         };
 
-        // Initialize Firebase
         const firebaseApp = initializeApp(firebaseConfig);
         const auth = getAuth(firebaseApp);
         const db = getFirestore(firebaseApp);
@@ -250,7 +247,6 @@
 
         const TMDB_API_KEY = '5e264941432a0e290b364a1636205f1b';
         
-        // --- O restante do seu script JS virá aqui ---
         const app = {
                 nav: { 
                     feed: document.getElementById('nav-feed'), 
@@ -287,12 +283,11 @@
             let watchedList = [];
             let lastRecommendationId = null;
             let currentUser = null;
-            let unsubscribeFromWatchedList = null; // Para parar de ouvir as atualizações ao fazer logout
+            let unsubscribeFromWatchedList = null;
+            let currentModalMovieData = null; 
             
-            // --- FUNÇÕES PRINCIPAIS E DE AUTENTICAÇÃO ---
-
             function initAuth() {
-                setupAuthEventListeners(); // FIX: Attach auth form listeners immediately
+                setupAuthEventListeners(); 
                 app.auth.loading.classList.remove('hidden');
                 app.auth.loginForm.classList.add('hidden');
                 app.auth.registerForm.classList.add('hidden');
@@ -300,7 +295,6 @@
                 onAuthStateChanged(auth, user => {
                     app.auth.loading.classList.add('hidden');
                     if (user) {
-                        // Usuário está logado
                         currentUser = user;
                         app.auth.view.classList.add('hidden');
                         app.appContent.classList.remove('hidden');
@@ -309,14 +303,13 @@
                         setupRealtimeListener(user.uid);
                         initApp();
                     } else {
-                        // Usuário está deslogado
                         currentUser = null;
                         app.appContent.classList.add('hidden');
                         app.auth.view.classList.remove('hidden');
                         app.auth.loginForm.classList.remove('hidden');
 
                         if (unsubscribeFromWatchedList) {
-                            unsubscribeFromWatchedList(); // Para de ouvir a lista antiga
+                            unsubscribeFromWatchedList(); 
                         }
                         watchedList = [];
                         renderWatchedList();
@@ -334,16 +327,22 @@
                 unsubscribeFromWatchedList = onSnapshot(q, (snapshot) => {
                     watchedList = snapshot.docs.map(doc => ({...doc.data(), docId: doc.id }));
                     renderWatchedList();
-                    // Se estiver na tela de estatísticas, atualiza
                     if (!app.views.stats.classList.contains('hidden')) {
                         renderStatsDashboard();
                     }
+                }, (error) => {
+                    console.error("Erro ao carregar a lista de filmes do Firestore:", error);
+                    let message = "Erro ao carregar sua lista.";
+                    if (error.code === 'permission-denied') {
+                        message = "Erro de permissão. Verifique as regras de segurança do Firestore.";
+                    }
+                    showToast(message, "error");
                 });
             }
 
             function initApp() {
                 if (!TMDB_API_KEY) showApiWarning();
-                setupAppEventListeners(); // FIX: Listeners for the main app
+                setupAppEventListeners(); 
                 loadFeed();
                 feather.replace();
             }
@@ -391,12 +390,10 @@
                     const closeBtn = event.target.closest('.modal-close-btn');
                     const saveReviewBtn = event.target.closest('.save-review-btn');
                     const editReviewBtn = event.target.closest('.edit-review-btn');
-                    const addBtn = event.target.closest('.add-movie-btn');
-
+                    
                     if (event.target === app.modal.overlay || closeBtn) closeModal();
                     if (saveReviewBtn) handleSaveReview(saveReviewBtn);
                     if (editReviewBtn) handleEditReviewClick(editReviewBtn);
-                    if (addBtn) handleAddMovieClick(addBtn);
                 });
             }
 
@@ -411,6 +408,8 @@
                     let message = 'Ocorreu um erro ao tentar fazer login.';
                     if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                         message = 'E-mail ou senha incorretos. Verifique e tente novamente.';
+                    } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid') {
+                        message = 'Chave de API do Firebase inválida. Verifique a configuração.';
                     }
                     showToast(message, 'error');
                 }
@@ -628,7 +627,13 @@
 
                 const movieInList = watchedList.find(m => m.id === movieId);
                 
-                const movieData = JSON.parse(button.dataset.movieData);
+                const movieData = currentModalMovieData;
+                if (!movieData || movieData.id !== movieId) {
+                    console.error("Dados do filme no modal estão inconsistentes ou ausentes.");
+                    showToast("Ocorreu um erro ao salvar. Tente abrir e fechar a janela de avaliação.", "error");
+                    return;
+                }
+                
                 const movieToStore = { 
                     id: movieData.id, 
                     title: movieData.title, 
@@ -644,20 +649,22 @@
                 try {
                     const collectionRef = collection(db, 'users', currentUser.uid, 'watchedMovies');
                     if (movieInList && movieInList.docId) {
-                        // Editando - usa setDoc com o docId
                         const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieInList.docId);
-                        await setDoc(docRef, movieToStore, { merge: true }); // merge para não sobrescrever o addedAt
+                        await setDoc(docRef, movieToStore, { merge: true }); 
+                        closeModal(); // Fecha o modal ANTES de mostrar o toast
                         showToast("Avaliação atualizada!", 'success');
                     } else {
-                        // Adicionando
                         await addDoc(collectionRef, movieToStore);
+                        closeModal(); // Fecha o modal ANTES de mostrar o toast
                         showToast(`"${movieToStore.title}" adicionado!`, 'success');
                     }
-                    updateAllButtonsForMovie(movieId, true);
-                    closeModal();
                 } catch (error) {
                     console.error("Erro ao salvar no Firestore:", error);
-                    showToast("Erro ao salvar. Tente novamente.", 'error');
+                    let message = "Erro ao salvar. Tente novamente.";
+                    if (error.code === 'permission-denied') {
+                        message = "Erro de permissão. Verifique as regras de segurança do Firestore.";
+                    }
+                    showToast(message, 'error');
                 }
             }
 
@@ -674,7 +681,6 @@
                     const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieToRemove.docId);
                     await deleteDoc(docRef);
                     showToast(`"${movieToRemove.title}" removido.`, 'info');
-                    // O onSnapshot vai atualizar a UI automaticamente
                 } catch (error) {
                     console.error("Erro ao remover do Firestore:", error);
                     showToast("Erro ao remover. Tente novamente.", 'error');
@@ -699,7 +705,7 @@
             
             function renderCarousel(movies, title, id) {
                 if (!movies || movies.length === 0) return '';
-                const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie)}</div>`).join('');
+                const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie, false)}</div>`).join('');
                 return `
                     <section class="mb-8 carousel-container relative">
                         <h2 class="text-2xl font-bold text-white mb-4">${title}</h2>
@@ -718,7 +724,6 @@
                     const movieCards = watchedList.map(movie => createMovieCard(movie, true)).join('');
                     app.list.container.innerHTML = movieCards;
                 }
-                // Atualiza todos os botões no feed para refletir o estado da lista
                 document.querySelectorAll('.add-movie-btn').forEach(btn => {
                     const movieId = parseInt(btn.dataset.id, 10);
                     const isAdded = watchedList.some(m => m.id === movieId);
@@ -747,7 +752,7 @@
                     `;
                 } else {
                     overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300'}" ${isAlreadyAdded ? 'disabled' : ''}>
-                           <i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4 pointer-events-none"></i> ${isAlreadyAdded ? 'Adicionado' : 'Adicionar'}
+                           <i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4 pointer-events-none"></i> ${isAlreadyAdded ? 'Assistido' : 'Adicionar'}
                        </button>`;
                 }
 
@@ -767,7 +772,7 @@
                 const buttons = document.querySelectorAll(`.add-movie-btn[data-id='${movieId}']`);
                 buttons.forEach(button => {
                     if(isAdded) {
-                        button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Adicionado';
+                        button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Assistido';
                         button.disabled = true;
                         button.classList.add('bg-gray-500/90', 'cursor-not-allowed', 'opacity-100');
                         button.classList.remove('bg-emerald-600/90', 'hover:bg-emerald-700/90', 'opacity-0', 'group-hover:opacity-100');
@@ -826,7 +831,6 @@
                         }
                     }
                     if (!silent) showToast("Dados atualizados!", "success");
-                    // O onSnapshot irá pegar as mudanças e re-renderizar
                     return;
                 }
                 
@@ -913,6 +917,7 @@
             }
             
             function openReviewModal(movie, existingReview = null) {
+                currentModalMovieData = movie;
                 openModal();
                 const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=Sem+Imagem';
                 
@@ -936,7 +941,7 @@
 
                         <textarea id="movie-review-text" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" rows="4" placeholder="Escreva sua resenha (opcional)...">${existingReview?.review || ''}</textarea>
                         
-                        <button class="save-review-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}" data-title="${movie.title}" data-movie-data='${JSON.stringify(movie)}'>
+                        <button class="save-review-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}" data-title="${movie.title}">
                             Salvar Avaliação
                         </button>
                     </div>`;
@@ -1058,3 +1063,4 @@
     </script>
 </body>
 </html>
+
