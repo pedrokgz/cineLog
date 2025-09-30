@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7667511140894281"
-     crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineLog</title>
@@ -139,6 +137,7 @@
                     <i data-feather="loader" class="w-12 h-12 mx-auto animate-spin text-emerald-400"></i>
                     <p class="mt-4 text-gray-400">Autenticando...</p>
                 </div>
+                <div id="auth-error-container"></div>
             </div>
         </div>
 
@@ -268,7 +267,8 @@
                     showLoginLink: document.getElementById('show-login-link'),
                     showRegisterLink: document.getElementById('show-register-link'),
                     logoutBtn: document.getElementById('logout-btn'),
-                    userEmail: document.getElementById('user-email')
+                    userEmail: document.getElementById('user-email'),
+                    errorContainer: document.getElementById('auth-error-container')
                 },
                 appContent: document.getElementById('app-content'),
                 search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
@@ -293,8 +293,22 @@
                 app.auth.loading.classList.remove('hidden');
                 app.auth.loginForm.classList.add('hidden');
                 app.auth.registerForm.classList.add('hidden');
+                app.auth.errorContainer.innerHTML = '';
+
+                const authTimeout = setTimeout(() => {
+                    if (!currentUser) { // Only show error if still not authenticated
+                        app.auth.loading.classList.add('hidden');
+                        app.auth.errorContainer.innerHTML = `
+                            <div class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center mt-4">
+                                <h3 class="font-bold">Falha na Conexão</h3>
+                                <p class="text-sm mt-2">Não foi possível conectar ao sistema de autenticação. Verifique sua conexão e as configurações do Firebase.</p>
+                            </div>
+                        `;
+                    }
+                }, 8000);
 
                 onAuthStateChanged(auth, user => {
+                    clearTimeout(authTimeout);
                     app.auth.loading.classList.add('hidden');
                     if (user) {
                         currentUser = user;
@@ -309,6 +323,7 @@
                         app.appContent.classList.add('hidden');
                         app.auth.view.classList.remove('hidden');
                         app.auth.loginForm.classList.remove('hidden');
+                        app.auth.registerForm.classList.add('hidden');
 
                         if (unsubscribeFromWatchedList) {
                             unsubscribeFromWatchedList(); 
@@ -392,10 +407,12 @@
                     const closeBtn = event.target.closest('.modal-close-btn');
                     const saveReviewBtn = event.target.closest('.save-review-btn');
                     const editReviewBtn = event.target.closest('.edit-review-btn');
-                    
+                    const addBtnInModal = event.target.closest('.add-movie-btn');
+
                     if (event.target === app.modal.overlay || closeBtn) closeModal();
                     if (saveReviewBtn) handleSaveReview(saveReviewBtn);
                     if (editReviewBtn) handleEditReviewClick(editReviewBtn);
+                    if (addBtnInModal) handleAddMovieClick(addBtnInModal);
                 });
             }
 
@@ -623,43 +640,50 @@
                     showToast("Você precisa estar logado para salvar filmes.", "error");
                     return;
                 }
-                const movieId = parseInt(button.dataset.id, 10);
-                const rating = parseInt(document.getElementById('movie-rating').value, 10);
-                const reviewText = document.getElementById('movie-review-text').value.trim();
 
-                const movieInList = watchedList.find(m => m.id === movieId);
-                
-                const movieData = currentModalMovieData;
-                if (!movieData || movieData.id !== movieId) {
-                    console.error("Dados do filme no modal estão inconsistentes ou ausentes.");
-                    showToast("Ocorreu um erro ao salvar. Tente abrir e fechar a janela de avaliação.", "error");
-                    return;
-                }
-                
-                const movieToStore = { 
-                    id: movieData.id, 
-                    title: movieData.title, 
-                    poster_path: movieData.poster_path, 
-                    release_date: movieData.release_date,
-                    rating: rating,
-                    review: reviewText,
-                    runtime: movieData.runtime,
-                    genres: movieData.genres,
-                    addedAt: serverTimestamp()
-                };
+                button.disabled = true;
+                button.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin mx-auto"></i>';
+                feather.replace();
 
                 try {
+                    const movieId = parseInt(button.dataset.id, 10);
+                    const rating = parseInt(document.getElementById('movie-rating').value, 10);
+                    const reviewText = document.getElementById('movie-review-text').value.trim();
+
+                    const movieInList = watchedList.find(m => m.id === movieId);
+                    
+                    const movieData = currentModalMovieData;
+                    if (!movieData || movieData.id !== movieId) {
+                        throw new Error("Dados do filme no modal estão inconsistentes.");
+                    }
+                    
+                    const movieToStore = { 
+                        id: movieData.id, 
+                        title: movieData.title, 
+                        poster_path: movieData.poster_path, 
+                        release_date: movieData.release_date,
+                        rating: rating,
+                        review: reviewText,
+                        runtime: movieData.runtime,
+                        genres: movieData.genres,
+                        addedAt: serverTimestamp()
+                    };
+
                     const collectionRef = collection(db, 'users', currentUser.uid, 'watchedMovies');
+                    let toastMessage = "";
                     if (movieInList && movieInList.docId) {
                         const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieInList.docId);
                         await setDoc(docRef, movieToStore, { merge: true }); 
-                        closeModal(); // Fecha o modal ANTES de mostrar o toast
-                        showToast("Avaliação atualizada!", 'success');
+                        toastMessage = "Avaliação atualizada!";
                     } else {
                         await addDoc(collectionRef, movieToStore);
-                        closeModal(); // Fecha o modal ANTES de mostrar o toast
-                        showToast(`"${movieToStore.title}" adicionado!`, 'success');
+                        toastMessage = `"${movieToStore.title}" adicionado!`;
                     }
+                    
+                    closeModal(() => {
+                        showToast(toastMessage, 'success');
+                    });
+
                 } catch (error) {
                     console.error("Erro ao salvar no Firestore:", error);
                     let message = "Erro ao salvar. Tente novamente.";
@@ -667,6 +691,9 @@
                         message = "Erro de permissão. Verifique as regras de segurança do Firestore.";
                     }
                     showToast(message, 'error');
+                    button.disabled = false;
+                    button.innerHTML = 'Salvar Avaliação';
+                    feather.replace();
                 }
             }
 
@@ -995,13 +1022,14 @@
                     app.modal.contentWrapper.classList.add('scale-100');
                 }, 10);
             }
-            function closeModal() {
+            function closeModal(callback) {
                 document.body.style.overflow = '';
                 app.modal.overlay.classList.remove('opacity-100');
                 app.modal.contentWrapper.classList.remove('scale-100');
                 setTimeout(() => {
                     app.modal.overlay.classList.add('hidden');
                     app.modal.contentWrapper.innerHTML = '';
+                    if (callback) callback();
                 }, 300);
             }
             function formatRuntime(minutes) {
