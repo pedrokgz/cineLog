@@ -124,6 +124,11 @@
                          <label for="register-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
                          <input type="email" id="register-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                      </div>
+                     <div class="mb-4">
+                        <label for="register-username" class="block text-gray-400 text-sm font-bold mb-2">Username (@)</label>
+                        <input type="text" id="register-username" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="ex: seunome">
+                        <p class="text-xs text-gray-500 mt-1">Será seu @ único. Apenas letras minúsculas, números e pontos.</p>
+                    </div>
                      <div class="mb-6">
                          <label for="register-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
                          <input type="password" id="register-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
@@ -206,7 +211,7 @@
                 <!-- Nova Visualização de Amigos -->
                 <div id="friends-view" class="hidden max-w-4xl mx-auto">
                     <form id="user-search-form" class="flex gap-2 mb-8 max-w-lg mx-auto">
-                        <input type="text" id="user-search-input" placeholder="Buscar usuários pelo nome de perfil..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="user-search-input" placeholder="Buscar usuários pelo @username..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
                             <i data-feather="search" class="w-5 h-5"></i>
                         </button>
@@ -396,11 +401,12 @@
              unsubscribeFromProfile = onSnapshot(profileRef, (doc) => {
                  if (doc.exists()) {
                      userProfile = { uid: userId, ...doc.data() };
+                     updateHeaderUI();
                  } else {
-                     createProfileIfNotExists(currentUser);
-                     userProfile = { uid: userId, displayName: currentUser.email, bio: '', photoURL: '' };
+                     console.error("Perfil do usuário não encontrado para o UID:", userId);
+                     showToast("Erro: Não foi possível carregar seu perfil.", "error");
+                     signOut(auth);
                  }
-                 updateHeaderUI();
              }, (error) => {
                  console.error("Erro ao carregar perfil:", error);
                  showToast("Não foi possível carregar seu perfil.", "error");
@@ -419,27 +425,34 @@
             });
         }
 
-        async function createProfileIfNotExists(user) {
+        async function createProfile(user, username) {
+            const batch = writeBatch(db);
             const profileRef = doc(db, 'users', user.uid);
+            const displayName = user.email.split('@')[0];
+            batch.set(profileRef, {
+                email: user.email,
+                username: username,
+                username_lowercase: username.toLowerCase(),
+                displayName: displayName,
+                bio: 'Bem-vindo(a) ao CineLog!',
+                photoURL: `https://placehold.co/128x128/2c3440/e0e0e0?text=${displayName[0].toUpperCase()}`,
+                createdAt: serverTimestamp()
+            });
+
+            const usernameRef = doc(db, "usernames", username.toLowerCase());
+            batch.set(usernameRef, { uid: user.uid });
+
             try {
-                const docSnap = await getDoc(profileRef);
-                if (!docSnap.exists()) {
-                    await setDoc(profileRef, {
-                        email: user.email,
-                        displayName: user.email.split('@')[0],
-                        bio: 'Bem-vindo(a) ao CineLog!',
-                        photoURL: `https://placehold.co/128x128/2c3440/e0e0e0?text=${user.email[0].toUpperCase()}`,
-                        createdAt: serverTimestamp()
-                    });
-                }
+                await batch.commit();
             } catch (error) {
-                console.error("Erro ao criar perfil:", error);
+                console.error("Erro ao criar perfil e username:", error);
+                showToast("Erro crítico ao criar perfil. Tente novamente.", "error");
             }
         }
         
         function updateHeaderUI() {
             if (!userProfile) return;
-            const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${userProfile.displayName[0].toUpperCase()}`;
+            const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${(userProfile.displayName || 'C')[0].toUpperCase()}`;
             app.auth.userDisplayName.textContent = userProfile.displayName;
             app.auth.userEmail.textContent = userProfile.email;
             app.auth.userAvatar.src = userProfile.photoURL || placeholderAvatar;
@@ -487,9 +500,7 @@
             app.recommendation.btn.addEventListener('click', handleRecommendationRequest);
             app.friends.userSearchForm.addEventListener('submit', handleUserSearch);
             
-            // Event Delegation for dynamic content
             document.body.addEventListener('click', (event) => {
-                // Profile actions
                 const editProfileBtn = event.target.closest('#edit-profile-btn');
                 const cancelEditBtn = event.target.closest('#cancel-edit-profile-btn');
                 const viewProfileBtn = event.target.closest('.view-profile-btn');
@@ -504,7 +515,6 @@
                 if (acceptRequestBtn) acceptFriendRequest(acceptRequestBtn.dataset.uid);
                 if (rejectRequestBtn) rejectFriendRequest(rejectRequestBtn.dataset.uid);
                 
-                // Movie actions
                 const addBtn = event.target.closest('.add-movie-btn');
                 const removeBtn = event.target.closest('.remove-movie-btn');
                 const card = event.target.closest('.movie-card');
@@ -514,7 +524,6 @@
                 else if (scrollBtn) { event.stopPropagation(); handleCarouselScroll(scrollBtn); }
                 else if (card) { handleCardClick(card); }
 
-                // Modal actions
                 const closeBtn = event.target.closest('.modal-close-btn');
                 const saveReviewBtn = event.target.closest('.save-review-btn');
                 const editReviewBtn = event.target.closest('.edit-review-btn');
@@ -532,44 +541,133 @@
             e.preventDefault();
             const form = e.target;
             const newDisplayName = form.querySelector('#profile-edit-name').value.trim();
+            const newUsername = form.querySelector('#profile-edit-username').value.trim().toLowerCase();
             const newBio = form.querySelector('#profile-edit-bio').value.trim();
             const newPhotoURL = form.querySelector('#profile-edit-photo').value.trim();
+            const originalUsername = form.dataset.originalUsername;
 
-            if (!newDisplayName) { showToast("O nome de perfil não pode ficar em branco.", "error"); return; }
+            if (!originalUsername) {
+                showToast("Erro: Não foi possível verificar seu username atual. Recarregue e tente novamente.", "error");
+                return;
+            }
 
-            const profileRef = doc(db, 'users', currentUser.uid);
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = `<i data-feather="loader" class="animate-spin mx-auto"></i>`;
+            feather.replace();
+
             try {
-                await setDoc(profileRef, { displayName: newDisplayName, bio: newBio, photoURL: newPhotoURL }, { merge: true });
+                if (newUsername !== originalUsername) {
+                    const usernameRegex = /^[a-z0-9.]+$/;
+                    if (!usernameRegex.test(newUsername) || newUsername.length < 3 || newUsername.length > 20) {
+                        showToast("Username inválido. Use 3-20 caracteres (letras minúsculas, números, pontos).", "error");
+                        return;
+                    }
+
+                    const newUsernameRef = doc(db, "usernames", newUsername);
+                    const docSnap = await getDoc(newUsernameRef);
+
+                    if (docSnap.exists()) {
+                        showToast("Este @username já está em uso. Tente outro.", "error");
+                        return;
+                    }
+
+                    const batch = writeBatch(db);
+                    const oldUsernameRef = doc(db, "usernames", originalUsername);
+                    batch.delete(oldUsernameRef);
+                    batch.set(newUsernameRef, { uid: currentUser.uid });
+                    
+                    const profileRef = doc(db, 'users', currentUser.uid);
+                    batch.update(profileRef, { 
+                        username: newUsername, 
+                        username_lowercase: newUsername,
+                        displayName: newDisplayName,
+                        bio: newBio, 
+                        photoURL: newPhotoURL 
+                    });
+
+                    await batch.commit();
+                } else {
+                    const profileRef = doc(db, 'users', currentUser.uid);
+                    await setDoc(profileRef, { 
+                        displayName: newDisplayName,
+                        bio: newBio, 
+                        photoURL: newPhotoURL 
+                    }, { merge: true });
+                }
+
                 showToast("Perfil atualizado com sucesso!", "success");
                 form.classList.add('hidden');
-                form.previousElementSibling.classList.remove('hidden');
+                document.getElementById('display-profile').classList.remove('hidden');
+
             } catch (error) {
                 console.error("Erro ao atualizar perfil:", error);
                 showToast("Não foi possível atualizar o perfil.", "error");
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Salvar';
             }
         }
 
         async function handleLogin(e) { e.preventDefault(); const email = app.auth.loginForm.querySelector('#login-email').value; const password = app.auth.loginForm.querySelector('#login-password').value; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { console.error("Erro no login:", error.code); let message = 'Ocorreu um erro.'; if (error.code === 'auth/invalid-credential') { message = 'E-mail ou senha incorretos.'; } showToast(message, 'error'); } }
-        async function handleRegister(e) { e.preventDefault(); const email = app.auth.registerForm.querySelector('#register-email').value; const password = app.auth.registerForm.querySelector('#register-password').value; try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await createProfileIfNotExists(userCredential.user); } catch (error) { console.error("Erro no cadastro:", error.code); let message = 'Ocorreu um erro.'; if (error.code === 'auth/email-already-in-use') { message = 'Este e-mail já está cadastrado.'; } else if (error.code === 'auth/weak-password') { message = 'A senha precisa ter pelo menos 6 caracteres.'; } showToast(message, 'error'); } }
+        
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const username = document.getElementById('register-username').value.trim().toLowerCase();
+            const submitButton = app.auth.registerForm.querySelector('button[type="submit"]');
+
+            const usernameRegex = /^[a-z0-9.]+$/;
+            if (!usernameRegex.test(username) || username.length < 3 || username.length > 20) {
+                showToast("Username inválido. Use 3-20 caracteres (letras minúsculas, números, pontos).", "error");
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = `<i data-feather="loader" class="animate-spin mx-auto"></i>`;
+            feather.replace();
+
+            const usernameRef = doc(db, "usernames", username);
+            const docSnap = await getDoc(usernameRef);
+
+            if (docSnap.exists()) {
+                showToast("Este @username já está em uso. Tente outro.", "error");
+                submitButton.disabled = false;
+                submitButton.textContent = 'Criar Conta';
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await createProfile(userCredential.user, username);
+            } catch (error) {
+                 console.error("Erro no cadastro:", error.code);
+                 let message = 'Ocorreu um erro ao tentar criar a conta.';
+                 if (error.code === 'auth/email-already-in-use') message = 'Este e-mail já está cadastrado.';
+                 else if (error.code === 'auth/weak-password') message = 'A senha precisa ter pelo menos 6 caracteres.';
+                 showToast(message, 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Criar Conta';
+            }
+        }
+
         async function handleLogout() { try { await signOut(auth); } catch (error) { console.error("Erro no logout:", error); showToast(`Erro: ${error.message}`, 'error'); } }
 
         async function switchView(viewName, dataId = null) {
             currentlyViewingProfileId = (viewName === 'profile') ? (dataId || currentUser.uid) : null;
-
             Object.values(app.views).forEach(view => view.classList.add('hidden'));
             Object.values(app.nav).forEach(button => { button.classList.remove('bg-emerald-500', 'text-white'); button.classList.add('text-gray-300'); });
-
             app.views[viewName].classList.remove('hidden');
             app.nav[viewName].classList.add('bg-emerald-500', 'text-white');
             app.nav[viewName].classList.remove('text-gray-300');
-
             if (viewName === 'stats') renderStatsDashboard();
             else if (viewName === 'feed') { app.search.input.value = ''; loadFeed(); }
             else if (viewName === 'profile') renderProfileView(currentlyViewingProfileId);
             else if (viewName === 'friends') renderFriendsView();
         }
         
-        // ... (resto do código, como fetchTMDB, loadFeed, handleSearch, etc., permanece o mesmo)
         async function fetchTMDB(endpoint) { const separator = endpoint.includes('?') ? '&' : '?'; const url = `https://api.themoviedb.org/3/${endpoint}${separator}api_key=${TMDB_API_KEY}&language=pt-BR`; const response = await fetch(url); if (!response.ok) throw new Error(`Falha ao buscar dados: ${endpoint}`); return response.json(); }
         async function loadFeed() { app.recommendation.container.innerHTML = ''; lastRecommendationId = null; const currentYear = new Date().getFullYear(); app.carouselsContainer.innerHTML = renderCarouselSkeleton('Destaques do Dia') + renderCarouselSkeleton('Destaques da Semana') + renderCarouselSkeleton('Lançamentos') + renderCarouselSkeleton(`Melhores de ${currentYear}`); feather.replace(); try { const [trendingDay, trendingWeek, releases, bestOfYear] = await Promise.all([ fetchTMDB('trending/movie/day'), fetchTMDB('trending/movie/week'), fetchTMDB('movie/now_playing?region=BR'), fetchTMDB(`discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=${currentYear}`) ]); app.carouselsContainer.innerHTML = renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel') + renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel') + renderCarousel(releases.results, 'Em Cartaz', 'releases-carousel') + renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel'); feather.replace(); } catch (error) { console.error("Erro ao carregar o feed:", error); app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`; } }
         async function handleSearch(event) { event.preventDefault(); const query = app.search.input.value.trim(); app.recommendation.container.innerHTML = ''; if (!query) { loadFeed(); return; } app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`; try { const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`); if (data.results.length === 0) { app.carouselsContainer.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado para "${query}".</p>`; return; } const movieCards = data.results.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join(''); app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`; feather.replace(); } catch (error) { console.error("Erro na busca:", error); app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`; } }
@@ -597,8 +695,6 @@
         function formatMinutesToHoursAndMinutes(totalMinutes) { if (!totalMinutes || totalMinutes <= 0) return '0m'; const h = Math.floor(totalMinutes / 60); const m = Math.round(totalMinutes % 60); return `${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm' : ''}`.trim() || '0m'; }
         function renderModalContent(movie) { const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=N/A'; const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A'; const runtime = formatRuntime(movie.runtime); const watchedMovie = watchedList.find(m => m.id === movie.id); let reviewSection = `<button class="add-movie-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg mt-6" data-id="${movie.id}">Adicionar à Minha Lista</button>`; if (watchedMovie) { let ratingHTML = ''; if (watchedMovie.rating > 0) { ratingHTML = `<div class="flex items-center text-3xl mb-2 text-amber-400">${Array.from({length: 5}, (_, i) => `<span>${i < watchedMovie.rating ? '★' : '<span class="text-gray-600">★</span>'}</span>`).join('')}</div>`; } reviewSection = `<div class="mt-4 pt-4 border-t border-gray-700"><h3 class="text-lg font-semibold text-white mb-2">Sua Avaliação</h3>${ratingHTML}${watchedMovie.review ? `<p class="text-gray-300 text-sm bg-gray-700/50 p-3 rounded-md"><em>"${watchedMovie.review}"</em></p>` : '<p class="text-gray-400 text-sm italic">Sem resenha.</p>'}<button class="edit-review-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg mt-6" data-id="${movie.id}">Editar Avaliação</button></div>`; } app.modal.contentWrapper.innerHTML = `<button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button><div class="w-full md:w-1/3 flex-shrink-0"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div><div class="p-6 flex-grow flex flex-col modal-content"><h2 class="text-3xl font-bold text-white">${movie.title}</h2><div class="flex items-center gap-4 text-gray-400 text-sm mt-2 mb-4"><span>${year}</span><span>${runtime}</span></div><div class="flex flex-wrap gap-2 mb-4">${movie.genres.map(g => `<span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">${g.name}</span>`).join('')}</div><h3 class="text-lg font-semibold text-white mt-2 mb-2">Sinopse</h3><p class="text-gray-300 text-sm flex-grow">${movie.overview || 'Sinopse não disponível.'}</p>${reviewSection}</div>`; feather.replace(); }
         
-        // --- Novas Funções de Amizade ---
-        
         async function handleUserSearch(e) {
             e.preventDefault();
             const searchTerm = app.friends.userSearchInput.value.trim();
@@ -610,13 +706,14 @@
             feather.replace();
 
             try {
+                const searchTermLower = searchTerm.toLowerCase();
                 const usersRef = collection(db, "users");
-                const q = query(usersRef, where("displayName", ">=", searchTerm), where("displayName", "<=", searchTerm + '\uf8ff'));
+                const q = query(usersRef, where("username_lowercase", ">=", searchTermLower), where("username_lowercase", "<=", searchTermLower + '\uf8ff'));
                 const querySnapshot = await getDocs(q);
                 
                 const results = [];
                 querySnapshot.forEach(doc => {
-                    if (doc.id !== currentUser.uid) { // Não mostrar a si mesmo
+                    if (doc.id !== currentUser.uid) { 
                         results.push({ uid: doc.id, ...doc.data() });
                     }
                 });
@@ -643,7 +740,7 @@
                                 <img src="${user.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
                                 <div>
                                     <p class="font-bold text-white">${user.displayName}</p>
-                                    <p class="text-xs text-gray-400">${user.email}</p>
+                                    <p class="text-xs text-emerald-400 font-mono">@${user.username}</p>
                                 </div>
                             </div>
                             <div>${buttonHtml}</div>
@@ -665,7 +762,6 @@
             const requests = friendships.filter(f => f.status === 'pending_received');
             const friends = friendships.filter(f => f.status === 'accepted');
 
-            // Renderiza Pedidos
             if (requests.length > 0) {
                 app.friends.requestsContainer.innerHTML = requests.map(req => {
                     const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${req.displayName[0].toUpperCase()}`;
@@ -685,7 +781,6 @@
                 app.friends.requestsContainer.innerHTML = `<p class="text-sm text-gray-500 text-center">Nenhum pedido pendente.</p>`;
             }
             
-            // Renderiza Amigos
             if (friends.length > 0) {
                  app.friends.listContainer.innerHTML = friends.map(friend => {
                     const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${friend.displayName[0].toUpperCase()}`;
@@ -706,56 +801,30 @@
 
         async function sendFriendRequest({uid, name, photo}) {
             const batch = writeBatch(db);
-            // Doc para o remetente
             const senderRef = doc(db, 'users', currentUser.uid, 'friends', uid);
-            batch.set(senderRef, { status: 'pending_sent', displayName: name, photoURL: photo });
-            // Doc para o destinatário
+            batch.set(senderRef, { status: 'pending_sent', displayName: name, photoURL: photo || '' });
             const receiverRef = doc(db, 'users', uid, 'friends', currentUser.uid);
-            batch.set(receiverRef, { status: 'pending_received', displayName: userProfile.displayName, photoURL: userProfile.photoURL });
-
-            try {
-                await batch.commit();
-                showToast("Pedido de amizade enviado!", "success");
-            } catch (error) {
-                console.error("Erro ao enviar pedido:", error);
-                showToast("Erro ao enviar pedido.", "error");
-            }
+            batch.set(receiverRef, { status: 'pending_received', displayName: userProfile.displayName, photoURL: userProfile.photoURL || '', username: userProfile.username });
+            try { await batch.commit(); showToast("Pedido de amizade enviado!", "success"); } catch (error) { console.error("Erro ao enviar pedido:", error); showToast("Erro ao enviar pedido.", "error"); }
         }
         
         async function acceptFriendRequest(requesterId) {
             const batch = writeBatch(db);
             const data = { status: 'accepted', since: serverTimestamp() };
-            // Atualiza doc do usuário atual
             const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
             batch.update(userRef, data);
-            // Atualiza doc do remetente
             const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
             batch.update(requesterRef, data);
-
-            try {
-                await batch.commit();
-                showToast("Amizade aceita!", "success");
-            } catch (error) {
-                console.error("Erro ao aceitar pedido:", error);
-                showToast("Erro ao aceitar pedido.", "error");
-            }
+            try { await batch.commit(); showToast("Amizade aceita!", "success"); } catch (error) { console.error("Erro ao aceitar pedido:", error); showToast("Erro ao aceitar pedido.", "error"); }
         }
 
         async function rejectFriendRequest(requesterId) {
              const batch = writeBatch(db);
-            // Deleta doc do usuário atual
             const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
             batch.delete(userRef);
-            // Deleta doc do remetente
             const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
             batch.delete(requesterRef);
-            try {
-                await batch.commit();
-                showToast("Pedido recusado.", "info");
-            } catch (error) {
-                console.error("Erro ao recusar pedido:", error);
-                showToast("Erro ao recusar pedido.", "error");
-            }
+            try { await batch.commit(); showToast("Pedido recusado.", "info"); } catch (error) { console.error("Erro ao recusar pedido:", error); showToast("Erro ao recusar pedido.", "error"); }
         }
         
         async function renderProfileView(profileId) {
@@ -787,7 +856,7 @@
                          actionButtonHtml = `<button class="send-friend-request-btn w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0" data-uid="${profileData.uid}" data-name="${profileData.displayName}" data-photo="${profileData.photoURL || ''}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar Amigo</button>`;
                     }
                 }
-                const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${profileData.displayName[0].toUpperCase()}`;
+                const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${(profileData.displayName || 'C')[0].toUpperCase()}`;
 
                 const displayHtml = `
                      <div id="display-profile">
@@ -795,6 +864,7 @@
                             <img class="w-32 h-32 rounded-full object-cover bg-gray-700 border-4 border-emerald-500" src="${profileData.photoURL || placeholderAvatar}" onerror="this.src='${placeholderAvatar}'">
                             <div class="text-center sm:text-left">
                                 <h2 class="text-3xl font-bold text-white">${profileData.displayName}</h2>
+                                <p class="text-lg text-emerald-400 font-mono">@${profileData.username}</p>
                                 <p class="text-gray-400">${profileData.email}</p>
                                 <p class="mt-4 text-gray-300">${profileData.bio || 'Nenhuma bio definida.'}</p>
                             </div>
@@ -803,11 +873,16 @@
                      </div>`;
                 
                 const editFormHtml = isCurrentUser ? `
-                     <form id="edit-profile-form" class="hidden">
+                     <form id="edit-profile-form" class="hidden" data-original-username="${profileData.username}">
                          <h2 class="text-2xl font-bold text-white mb-6">Editar Perfil</h2>
                           <div class="mb-4">
-                            <label for="profile-edit-name" class="block text-gray-400 text-sm font-bold mb-2">Nome de Perfil</label>
+                            <label for="profile-edit-name" class="block text-gray-400 text-sm font-bold mb-2">Nome de Exibição</label>
                             <input type="text" id="profile-edit-name" required class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" value="${profileData.displayName}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="profile-edit-username" class="block text-gray-400 text-sm font-bold mb-2">Username (@)</label>
+                            <input type="text" id="profile-edit-username" required class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" value="${profileData.username}">
+                            <p class="text-xs text-gray-500 mt-1">Apenas letras minúsculas, números e pontos. Será sua identidade única.</p>
                         </div>
                          <div class="mb-4">
                             <label for="profile-edit-bio" class="block text-gray-400 text-sm font-bold mb-2">Bio</label>
