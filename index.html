@@ -92,7 +92,7 @@
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased pb-24 sm:pb-0">
 
     <!-- Container da Aplicação -->
     <div id="app-container">
@@ -101,7 +101,7 @@
         <div id="auth-view" class="min-h-screen flex flex-col items-center justify-center p-4">
              <div class="w-full max-w-md">
                  <header class="text-center mb-8">
-                     <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
+                     <h1 class="text-3xl sm:text-4xl font-extrabold text-white flex items-center justify-center gap-3">
                          <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
                          CineLog
                      </h1>
@@ -159,8 +159,8 @@
             
             <header class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                 <div class="flex items-center gap-3">
-                     <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
-                     <h1 class="text-4xl font-extrabold text-white">CineLog</h1>
+                     <i data-feather="film" class="w-8 h-8 sm:w-10 sm:h-10 text-emerald-400"></i>
+                     <h1 class="text-3xl sm:text-4xl font-extrabold text-white">CineLog</h1>
                 </div>
                  <div id="user-info" class="flex items-center gap-3 cursor-pointer" title="Ver meu perfil">
                      <div class="text-right">
@@ -172,14 +172,13 @@
                  </div>
             </header>
 
-            <nav class="bg-gray-800/50 rounded-full p-1 mb-8 max-w-4xl mx-auto">
-                 <div class="flex items-center justify-start sm:justify-center overflow-x-auto nav-scroll">
-                    <button id="nav-feed" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
-                    <button id="nav-list" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
-                    <button id="nav-stats" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
-                    <button id="nav-friends" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Amigos</button>
-                    <button id="nav-profile" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Perfil</button>
-                </div>
+            <!-- Navegação Desktop -->
+            <nav id="desktop-nav" class="hidden sm:flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-4xl mx-auto">
+                <button id="nav-feed" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
+                <button id="nav-list" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
+                <button id="nav-stats" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+                <button id="nav-friends" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Amigos</button>
+                <button id="nav-profile" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Perfil</button>
             </nav>
             
             <main>
@@ -192,7 +191,7 @@
                     </form>
                     
                     <div class="text-center mb-8">
-                        <button id="recommendation-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto">
+                        <button id="recommendation-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto w-full sm:w-auto">
                             <i data-feather="star" class="w-5 h-5"></i>
                             Me recomende um filme
                         </button>
@@ -214,7 +213,7 @@
 
                 <div id="stats-view" class="hidden max-w-4xl mx-auto"></div>
                 
-                <div id="profile-view" class="hidden max-w-2xl mx-auto bg-gray-800/50 p-8 rounded-lg shadow-lg">
+                <div id="profile-view" class="hidden max-w-4xl mx-auto bg-gray-800/50 p-6 sm:p-8 rounded-lg shadow-lg">
                      <div id="profile-content"></div> <!-- Conteúdo do perfil será renderizado aqui -->
                 </div>
 
@@ -228,13 +227,13 @@
                     </form>
                     <div id="user-search-results" class="mb-8"></div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="flex flex-col gap-8">
                         <div>
-                            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="user-plus" class="text-yellow-400"></i> Pedidos de Amizade</h2>
+                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="user-plus" class="text-yellow-400"></i> Pedidos de Amizade</h2>
                             <div id="friend-requests-container"></div>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="users" class="text-emerald-400"></i> Meus Amigos</h2>
+                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="users" class="text-emerald-400"></i> Meus Amigos</h2>
                             <div id="friends-list-container"></div>
                         </div>
                     </div>
@@ -244,13 +243,38 @@
         </div>
     </div>
 
+    <!-- Navegação Mobile Fixa -->
+    <nav id="mobile-nav" class="sm:hidden fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm border-t border-gray-700 flex justify-around z-40">
+        <button id="mobile-nav-feed" class="nav-button flex flex-col items-center justify-center text-xs font-medium transition-colors w-1/5 py-2 text-emerald-400">
+            <i data-feather="home" class="w-6 h-6 mb-1"></i>
+            <span>Início</span>
+        </button>
+        <button id="mobile-nav-list" class="nav-button flex flex-col items-center justify-center text-xs font-medium transition-colors w-1/5 py-2 text-gray-400">
+            <i data-feather="list" class="w-6 h-6 mb-1"></i>
+            <span>Lista</span>
+        </button>
+        <button id="mobile-nav-stats" class="nav-button flex flex-col items-center justify-center text-xs font-medium transition-colors w-1/5 py-2 text-gray-400">
+            <i data-feather="bar-chart-2" class="w-6 h-6 mb-1"></i>
+            <span>Status</span>
+        </button>
+        <button id="mobile-nav-friends" class="nav-button flex flex-col items-center justify-center text-xs font-medium transition-colors w-1/5 py-2 text-gray-400">
+            <i data-feather="users" class="w-6 h-6 mb-1"></i>
+            <span>Amigos</span>
+        </button>
+        <button id="mobile-nav-profile" class="nav-button flex flex-col items-center justify-center text-xs font-medium transition-colors w-1/5 py-2 text-gray-400">
+            <i data-feather="user" class="w-6 h-6 mb-1"></i>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+
     <!-- Modal de Detalhes do Filme / Review -->
     <div id="movie-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm overflow-y-auto p-4 z-50 hidden transition-opacity duration-300 opacity-0">
         <div id="modal-content-wrapper" class="bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl mx-auto my-8 flex flex-col md:flex-row overflow-hidden transform transition-transform duration-300 scale-95"></div>
     </div>
 
     <!-- Notificação Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 border border-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 translate-y-10 transition-all duration-300 z-[60]">
+    <div id="toast" class="fixed bottom-20 sm:bottom-5 right-5 bg-gray-900 border border-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 translate-y-10 transition-all duration-300 z-[60]">
         <p id="toast-message"></p>
     </div>
 
@@ -358,6 +382,7 @@
         let unsubscribeFromWatchedList = null;
         let unsubscribeFromProfile = null; 
         let unsubscribeFromFriends = null;
+        let unsubscribeFromFriendList = null;
         let currentModalMovieData = null; 
         let currentlyViewingProfileId = null;
         
@@ -398,6 +423,7 @@
                     if (unsubscribeFromWatchedList) unsubscribeFromWatchedList(); 
                     if (unsubscribeFromProfile) unsubscribeFromProfile();
                     if (unsubscribeFromFriends) unsubscribeFromFriends();
+                    if (unsubscribeFromFriendList) unsubscribeFromFriendList();
                     
                     watchedList = [];
                     friendships = [];
@@ -506,9 +532,13 @@
         }
 
         function setupAppEventListeners() {
-            Object.keys(app.nav).forEach(navKey => {
-                app.nav[navKey].addEventListener('click', () => switchView(navKey));
+            const navViews = ['feed', 'list', 'stats', 'friends', 'profile'];
+            navViews.forEach(viewName => {
+                document.querySelectorAll(`#nav-${viewName}, #mobile-nav-${viewName}`).forEach(btn => {
+                    btn.addEventListener('click', () => switchView(viewName));
+                });
             });
+
             app.auth.userInfo.addEventListener('click', () => switchView('profile', currentUser.uid));
             app.auth.logoutBtn.addEventListener('click', handleLogout);
             app.search.form.addEventListener('submit', handleSearch);
@@ -672,13 +702,37 @@
 
         async function handleLogout() { try { await signOut(auth); } catch (error) { console.error("Erro no logout:", error); showToast(`Erro: ${error.message}`, 'error'); } }
 
-        async function switchView(viewName, dataId = null) {
+        function switchView(viewName, dataId = null) {
+            if (currentlyViewingProfileId && currentlyViewingProfileId !== currentUser.uid) {
+                if(unsubscribeFromFriendList) {
+                    unsubscribeFromFriendList();
+                    unsubscribeFromFriendList = null;
+                }
+            }
             currentlyViewingProfileId = (viewName === 'profile') ? (dataId || currentUser.uid) : null;
+            
             Object.values(app.views).forEach(view => view.classList.add('hidden'));
-            Object.values(app.nav).forEach(button => { button.classList.remove('bg-emerald-500', 'text-white'); button.classList.add('text-gray-300'); });
             app.views[viewName].classList.remove('hidden');
-            app.nav[viewName].classList.add('bg-emerald-500', 'text-white');
-            app.nav[viewName].classList.remove('text-gray-300');
+
+            // Lógica para estado ativo da Navegação
+            document.querySelectorAll('#desktop-nav .nav-button').forEach(button => {
+                button.classList.remove('bg-emerald-500', 'text-white');
+                button.classList.add('text-gray-300');
+            });
+            document.getElementById(`nav-${viewName}`)?.classList.add('bg-emerald-500', 'text-white');
+            document.getElementById(`nav-${viewName}`)?.classList.remove('text-gray-300');
+
+            document.querySelectorAll('#mobile-nav .nav-button').forEach(button => {
+                button.classList.remove('text-emerald-400');
+                button.classList.add('text-gray-400');
+            });
+            const activeMobileBtn = document.getElementById(`mobile-nav-${viewName}`);
+            if (activeMobileBtn) {
+                activeMobileBtn.classList.remove('text-gray-400');
+                activeMobileBtn.classList.add('text-emerald-400');
+            }
+
+            // Lógica de renderização da view
             if (viewName === 'stats') renderStatsDashboard();
             else if (viewName === 'feed') { app.search.input.value = ''; loadFeed(); }
             else if (viewName === 'profile') renderProfileView(currentlyViewingProfileId);
@@ -697,7 +751,30 @@
         function handleCarouselScroll(button) { const direction = parseInt(button.dataset.direction, 10); const carousel = document.getElementById(button.dataset.carouselId); if (carousel) carousel.scrollLeft += carousel.clientWidth * 0.8 * direction; }
         function renderCarousel(movies, title, id) { if (!movies || movies.length === 0) return ''; const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie, false)}</div>`).join(''); return `<section class="mb-8 carousel-container relative"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div id="${id}" class="carousel">${movieCards}</div><button class="scroll-btn left-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="-1" data-carousel-id="${id}"><i data-feather="chevron-left" class="w-6 h-6 pointer-events-none"></i></button><button class="scroll-btn right-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="1" data-carousel-id="${id}"><i data-feather="chevron-right" class="w-6 h-6 pointer-events-none"></i></button></section>`; }
         function renderWatchedList() { if (watchedList.length === 0) { app.list.placeholder.classList.remove('hidden'); app.list.container.innerHTML = ''; } else { app.list.placeholder.classList.add('hidden'); const sortedList = [...watchedList].sort((a, b) => (b.addedAt?.seconds || 0) - (a.addedAt?.seconds || 0)); app.list.container.innerHTML = sortedList.map(movie => createMovieCard(movie, true)).join(''); } document.querySelectorAll('.add-movie-btn').forEach(btn => updateAllButtonsForMovie(parseInt(btn.dataset.id, 10), watchedList.some(m => m.id === parseInt(btn.dataset.id, 10)))); feather.replace(); }
-        function createMovieCard(movie, isWatched = false) { const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A'; const isAlreadyAdded = watchedList.some(m => m.id === movie.id); let overlayContent = ''; if (isWatched) { const watchedMovie = watchedList.find(m => m.id === movie.id); const ratingHTML = watchedMovie?.rating > 0 ? `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold"><i data-feather="star" class="w-3 h-3 fill-current"></i>${watchedMovie.rating.toFixed(0)}</div>` : ''; overlayContent = `${ratingHTML}<button data-id="${movie.id}" class="remove-movie-btn absolute top-2 right-2 bg-red-600/80 hover:bg-red-700/80 p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-110 z-10"><i data-feather="trash-2" class="w-4 h-4 text-white pointer-events-none"></i></button>`; } else { overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity'}" ${isAlreadyAdded ? 'disabled' : ''}><i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4"></i> ${isAlreadyAdded ? 'Assistido' : 'Adicionar'}</button>`; } return `<div data-id="${movie.id}" class="movie-card group relative rounded-lg overflow-hidden shadow-lg transform transition-transform hover:-translate-y-1 cursor-pointer aspect-[2/3]"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/500x750/2c3440/e0e0e0?text=Imagem'"><div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div><div class="absolute bottom-0 left-0 p-2 w-full"><h3 class="text-white text-sm font-bold truncate">${movie.title}</h3><p class="text-gray-300 text-xs">${year}</p></div>${overlayContent}</div>`; }
+        
+        function createMovieCard(movie, isWatched = false, isFriendCard = false) {
+            const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+            const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+            let overlayContent = '';
+
+            if (isFriendCard) {
+                if (movie.rating > 0) {
+                    overlayContent = `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold"><i data-feather="star" class="w-3 h-3 fill-current"></i>${movie.rating.toFixed(0)}</div>`;
+                }
+            } else {
+                if (isWatched) {
+                    const watchedMovie = watchedList.find(m => m.id === movie.id);
+                    const ratingHTML = watchedMovie?.rating > 0 ? `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold"><i data-feather="star" class="w-3 h-3 fill-current"></i>${watchedMovie.rating.toFixed(0)}</div>` : '';
+                    overlayContent = `${ratingHTML}<button data-id="${movie.id}" class="remove-movie-btn absolute top-2 right-2 bg-red-600/80 hover:bg-red-700/80 p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-110 z-10"><i data-feather="trash-2" class="w-4 h-4 text-white pointer-events-none"></i></button>`;
+                } else {
+                    const isAlreadyAdded = watchedList.some(m => m.id === movie.id);
+                    overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity'}" ${isAlreadyAdded ? 'disabled' : ''}><i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4"></i> ${isAlreadyAdded ? 'Assistido' : 'Adicionar'}</button>`;
+                }
+            }
+
+            return `<div data-id="${movie.id}" class="movie-card group relative rounded-lg overflow-hidden shadow-lg transform transition-transform hover:-translate-y-1 cursor-pointer aspect-[2/3]"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/500x750/2c3440/e0e0e0?text=Imagem'"><div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div><div class="absolute bottom-0 left-0 p-2 w-full"><h3 class="text-white text-sm font-bold truncate">${movie.title}</h3><p class="text-gray-300 text-xs">${year}</p></div>${overlayContent}</div>`;
+        }
+
         function updateAllButtonsForMovie(movieId, isAdded) { document.querySelectorAll(`.add-movie-btn[data-id='${movieId}']`).forEach(button => { if (isAdded) { button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Assistido'; button.disabled = true; button.className = button.className.replace(/bg-emerald-600\/90 hover:bg-emerald-700\/90 opacity-0 group-hover:opacity-100/g, 'bg-gray-500/90 cursor-not-allowed opacity-100'); } else { button.innerHTML = '<i data-feather="plus" class="w-4 h-4"></i> Adicionar'; button.disabled = false; button.className = button.className.replace(/bg-gray-500\/90 cursor-not-allowed opacity-100/g, 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100'); } }); feather.replace(); }
         function renderCarouselSkeleton(title) { let skeletons = Array(6).fill('<div class="carousel-item"><div class="w-full aspect-[2/3] poster-loading rounded-lg"></div></div>').join(''); return `<section class="mb-8"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div class="carousel">${skeletons}</div></section>`; }
         function renderGridSkeletons(count) { return Array(count).fill('<div class="w-full aspect-[2/3] poster-loading rounded-lg"></div>').join(''); }
@@ -908,6 +985,65 @@
             }
         }
         
+        async function loadFriendWatchedList(friendId) {
+            const friendListContainer = document.getElementById('friend-watched-list');
+            const friendListPlaceholder = document.getElementById('friend-list-placeholder');
+            const statsContainer = document.getElementById('friend-stats-container');
+            if (!friendListContainer || !friendListPlaceholder || !statsContainer) return;
+
+            statsContainer.innerHTML = '';
+            friendListContainer.innerHTML = renderGridSkeletons(8); 
+
+            if (unsubscribeFromFriendList) {
+                unsubscribeFromFriendList();
+            }
+
+            const friendWatchedMoviesRef = collection(db, 'users', friendId, 'watchedMovies');
+            unsubscribeFromFriendList = onSnapshot(query(friendWatchedMoviesRef), (snapshot) => {
+                const friendMovies = snapshot.docs.map(doc => ({ ...doc.data(), docId: doc.id }));
+                
+                // Calcula e renderiza as estatísticas
+                const totalMovies = friendMovies.length;
+                const totalMinutes = friendMovies.reduce((acc, movie) => acc + (movie.runtime || 0), 0);
+                const formattedTime = formatMinutesToHoursAndMinutes(totalMinutes);
+                
+                statsContainer.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                            <i data-feather="film" class="w-8 h-8 mx-auto text-emerald-400 mb-2"></i>
+                            <p class="text-2xl font-bold text-white">${totalMovies}</p>
+                            <p class="text-xs text-gray-400 font-medium uppercase">Filmes</p>
+                        </div>
+                        <div class="bg-gray-700/50 p-4 rounded-lg text-center">
+                            <i data-feather="clock" class="w-8 h-8 mx-auto text-purple-400 mb-2"></i>
+                            <p class="text-2xl font-bold text-white">${formattedTime}</p>
+                            <p class="text-xs text-gray-400 font-medium uppercase">Tempo</p>
+                        </div>
+                    </div>
+                `;
+
+                // Renderiza a lista de filmes
+                if (snapshot.empty) {
+                    friendListContainer.innerHTML = '';
+                    friendListPlaceholder.classList.remove('hidden');
+                } else {
+                    friendListPlaceholder.classList.add('hidden');
+                    const sortedList = friendMovies.sort((a, b) => (b.addedAt?.seconds || 0) - (a.addedAt?.seconds || 0));
+                    friendListContainer.innerHTML = sortedList.map(movie => createMovieCard(movie, true, true)).join('');
+                }
+                feather.replace();
+
+            }, (error) => {
+                console.error("Erro ao carregar lista de filmes do amigo:", error);
+                statsContainer.innerHTML = '';
+                if (error.code === 'permission-denied') {
+                    friendListContainer.innerHTML = `<p class="text-center text-yellow-500 col-span-full">As permissões de segurança do Firebase precisam ser atualizadas para ver a lista de amigos. Verifique as instruções.</p>`;
+                } else {
+                    friendListContainer.innerHTML = `<p class="text-center text-red-400 col-span-full">Não foi possível carregar a lista de filmes.</p>`;
+                }
+            });
+        }
+
         async function renderProfileView(profileId) {
             app.profile.content.innerHTML = `<div class="text-center"><i data-feather="loader" class="animate-spin mx-auto text-emerald-400 w-12 h-12"></i></div>`;
             feather.replace();
@@ -945,8 +1081,19 @@
                 }
                 const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${(profileData.displayName || 'C')[0].toUpperCase()}`;
 
-                // Lógica para ocultar o e-mail
                 const emailHtml = isCurrentUser ? `<p class="text-gray-400">${profileData.email}</p>` : '';
+
+                const friendContentHtml = !isCurrentUser ? `
+                    <div class="mt-12">
+                        <h3 class="text-2xl font-bold text-white mb-4">Filmes Assistidos por ${profileData.displayName}</h3>
+                        <div id="friend-stats-container" class="mb-6"></div>
+                        <div id="friend-watched-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+                        <div id="friend-list-placeholder" class="hidden text-center py-8 text-gray-500">
+                            <i data-feather="film" class="w-12 h-12 mx-auto mb-4"></i>
+                            <p>${profileData.displayName} ainda não adicionou nenhum filme.</p>
+                        </div>
+                    </div>
+                ` : '';
 
                 const displayHtml = `
                      <div id="display-profile">
@@ -988,8 +1135,12 @@
                         </div>
                      </form>` : '';
 
-                app.profile.content.innerHTML = displayHtml + editFormHtml;
+                app.profile.content.innerHTML = displayHtml + editFormHtml + friendContentHtml;
                 feather.replace();
+
+                if (!isCurrentUser) {
+                    loadFriendWatchedList(profileId);
+                }
 
             } catch (error) {
                 console.error("Erro ao carregar perfil do usuário:", error);
@@ -1002,4 +1153,3 @@
     </script>
 </body>
 </html>
-
