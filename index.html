@@ -50,17 +50,17 @@
         .carousel::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
         .carousel-item {
             flex: 0 0 auto;
-            width: 40%; /* 2.5 items on mobile */
+            width: 50%; /* 2 items on mobile */
             margin-right: 1rem;
         }
         @media (min-width: 640px) { /* sm */
-            .carousel-item { width: 28%; } /* ~3.5 items */
+            .carousel-item { width: 33.33%; } /* 3 items */
         }
         @media (min-width: 768px) { /* md */
-            .carousel-item { width: 22%; } /* ~4.5 items */
+            .carousel-item { width: 25%; } /* 4 items */
         }
         @media (min-width: 1024px) { /* lg */
-            .carousel-item { width: 18%; } /* ~5.5 items */
+            .carousel-item { width: 20%; } /* 5 items */
         }
         .carousel-container:hover .scroll-btn {
             opacity: 1;
@@ -81,6 +81,14 @@
         }
         .star-rating span.rated {
             color: #f59e0b;
+        }
+        /* Oculta scrollbar da navegação */
+        .nav-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-scroll {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
     </style>
 </head>
@@ -164,12 +172,14 @@
                  </div>
             </header>
 
-            <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-xl mx-auto">
-                 <button id="nav-feed" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
-                 <button id="nav-list" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
-                 <button id="nav-stats" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
-                 <button id="nav-friends" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Amigos</button>
-                 <button id="nav-profile" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Perfil</button>
+            <nav class="bg-gray-800/50 rounded-full p-1 mb-8 max-w-4xl mx-auto">
+                 <div class="flex items-center justify-start sm:justify-center overflow-x-auto nav-scroll">
+                    <button id="nav-feed" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
+                    <button id="nav-list" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
+                    <button id="nav-stats" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+                    <button id="nav-friends" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Amigos</button>
+                    <button id="nav-profile" class="nav-button flex-shrink-0 rounded-full py-2 px-5 text-sm font-medium transition-colors text-gray-300">Perfil</button>
+                </div>
             </nav>
             
             <main>
@@ -268,7 +278,8 @@
             getDoc,
             where,
             getDocs,
-            writeBatch
+            writeBatch,
+            updateDoc
         } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -415,12 +426,16 @@
         
         function setupFriendsListener(userId) {
             if (unsubscribeFromFriends) unsubscribeFromFriends();
-            const friendsRef = collection(db, 'users', userId, 'friends');
-            unsubscribeFromFriends = onSnapshot(query(friendsRef), (snapshot) => {
+            const friendshipsRef = collection(db, 'friendships');
+            const q = query(friendshipsRef, where('users', 'array-contains', userId));
+            
+            unsubscribeFromFriends = onSnapshot(q, (snapshot) => {
                 friendships = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderFriendsView();
+                if (!app.views.friends.classList.contains('hidden')) {
+                    renderFriendsView();
+                }
             }, (error) => {
-                console.error("Erro ao carregar amigos:", error);
+                console.error("Erro ao carregar amizades:", error);
                 showToast("Erro ao carregar sua lista de amigos.", "error");
             });
         }
@@ -628,24 +643,26 @@
             submitButton.innerHTML = `<i data-feather="loader" class="animate-spin mx-auto"></i>`;
             feather.replace();
 
-            const usernameRef = doc(db, "usernames", username);
-            const docSnap = await getDoc(usernameRef);
-
-            if (docSnap.exists()) {
-                showToast("Este @username já está em uso. Tente outro.", "error");
-                submitButton.disabled = false;
-                submitButton.textContent = 'Criar Conta';
-                return;
-            }
-
             try {
+                const usernameRef = doc(db, "usernames", username);
+                const docSnap = await getDoc(usernameRef);
+
+                if (docSnap.exists()) {
+                    showToast("Este @username já está em uso. Tente outro.", "error");
+                    return; // O finally vai reativar o botão
+                }
+
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await createProfile(userCredential.user, username);
+
             } catch (error) {
                  console.error("Erro no cadastro:", error.code);
                  let message = 'Ocorreu um erro ao tentar criar a conta.';
-                 if (error.code === 'auth/email-already-in-use') message = 'Este e-mail já está cadastrado.';
-                 else if (error.code === 'auth/weak-password') message = 'A senha precisa ter pelo menos 6 caracteres.';
+                 if (error.code === 'auth/email-already-in-use') {
+                    message = 'Este e-mail já está cadastrado.';
+                 } else if (error.code === 'auth/weak-password') {
+                    message = 'A senha precisa ter pelo menos 6 caracteres.';
+                 }
                  showToast(message, 'error');
             } finally {
                 submitButton.disabled = false;
@@ -724,13 +741,19 @@
                 }
 
                 const resultsHtml = results.map(user => {
-                    const friendship = friendships.find(f => f.id === user.uid);
-                    let buttonHtml = `<button class="send-friend-request-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1" data-uid="${user.uid}" data-name="${user.displayName}" data-photo="${user.photoURL || ''}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar</button>`;
+                    const friendship = friendships.find(f => f.users.includes(user.uid));
+                    let buttonHtml = `<button class="send-friend-request-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1" data-uid="${user.uid}" data-name="${user.displayName}" data-photo="${user.photoURL || ''}" data-username="${user.username}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar</button>`;
                     
                     if (friendship) {
-                        if (friendship.status === 'accepted') buttonHtml = `<span class="text-xs font-bold text-emerald-400 flex items-center gap-1"><i data-feather="check" class="w-4 h-4"></i> Amigos</span>`;
-                        else if (friendship.status === 'pending_sent') buttonHtml = `<span class="text-xs font-bold text-gray-400">Enviado</span>`;
-                        else if (friendship.status === 'pending_received') buttonHtml = `<span class="text-xs font-bold text-yellow-400">Pendente</span>`;
+                        if (friendship.status === 'accepted') {
+                            buttonHtml = `<span class="text-xs font-bold text-emerald-400 flex items-center gap-1"><i data-feather="check" class="w-4 h-4"></i> Amigos</span>`;
+                        } else if (friendship.status === 'pending') {
+                            if (friendship.initiatedBy === currentUser.uid) {
+                                buttonHtml = `<span class="text-xs font-bold text-gray-400">Enviado</span>`;
+                            } else {
+                                buttonHtml = `<span class="text-xs font-bold text-yellow-400">Pendente</span>`;
+                            }
+                        }
                     }
 
                     const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${user.displayName[0].toUpperCase()}`;
@@ -758,39 +781,65 @@
             }
         }
 
-        function renderFriendsView() {
-            const requests = friendships.filter(f => f.status === 'pending_received');
+        async function renderFriendsView() {
+            if (!currentUser) return;
+            const requests = friendships.filter(f => f.status === 'pending' && f.initiatedBy !== currentUser.uid);
             const friends = friendships.filter(f => f.status === 'accepted');
 
             if (requests.length > 0) {
-                app.friends.requestsContainer.innerHTML = requests.map(req => {
-                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${req.displayName[0].toUpperCase()}`;
+                const requestPromises = requests.map(async (req) => {
+                    const otherUserId = req.users.find(id => id !== currentUser.uid);
+                    let otherUserInfo = req.user_info ? req.user_info[otherUserId] : null;
+
+                    if (!otherUserInfo) {
+                        const userDoc = await getDoc(doc(db, 'users', otherUserId));
+                        if(userDoc.exists()) {
+                            otherUserInfo = userDoc.data();
+                        } else {
+                            return '';
+                        }
+                    }
+
+                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${(otherUserInfo.displayName || 'U')[0].toUpperCase()}`;
                     return `
                     <div class="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between mb-2">
                         <div class="flex items-center gap-3">
-                            <img src="${req.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
-                            <p class="font-bold text-white">${req.displayName}</p>
+                            <img src="${otherUserInfo.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <p class="font-bold text-white">${otherUserInfo.displayName}</p>
+                                <p class="text-xs text-emerald-400 font-mono">@${otherUserInfo.username}</p>
+                            </div>
                         </div>
                         <div class="flex gap-2">
-                            <button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 p-2 rounded-full" data-uid="${req.id}" title="Aceitar"><i data-feather="check" class="w-4 h-4 text-white"></i></button>
-                            <button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 p-2 rounded-full" data-uid="${req.id}" title="Recusar"><i data-feather="x" class="w-4 h-4 text-white"></i></button>
+                            <button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 p-2 rounded-full" data-uid="${otherUserId}" title="Aceitar"><i data-feather="check" class="w-4 h-4 text-white"></i></button>
+                            <button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 p-2 rounded-full" data-uid="${otherUserId}" title="Recusar"><i data-feather="x" class="w-4 h-4 text-white"></i></button>
                         </div>
                     </div>`;
-                }).join('');
+                });
+                const requestsHtml = await Promise.all(requestPromises);
+                app.friends.requestsContainer.innerHTML = requestsHtml.join('');
+
             } else {
                 app.friends.requestsContainer.innerHTML = `<p class="text-sm text-gray-500 text-center">Nenhum pedido pendente.</p>`;
             }
             
             if (friends.length > 0) {
                  app.friends.listContainer.innerHTML = friends.map(friend => {
-                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${friend.displayName[0].toUpperCase()}`;
+                    const otherUserId = friend.users.find(id => id !== currentUser.uid);
+                    const otherUserInfo = friend.user_info ? friend.user_info[otherUserId] : null;
+                    if (!otherUserInfo) return '';
+
+                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${(otherUserInfo.displayName || 'U')[0].toUpperCase()}`;
                     return `
                     <div class="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <img src="${friend.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
-                            <p class="font-bold text-white">${friend.displayName}</p>
+                         <div class="flex items-center gap-3">
+                            <img src="${otherUserInfo.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <p class="font-bold text-white">${otherUserInfo.displayName}</p>
+                                <p class="text-xs text-emerald-400 font-mono">@${otherUserInfo.username}</p>
+                            </div>
                         </div>
-                        <button class="view-profile-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full" data-uid="${friend.id}">Ver Perfil</button>
+                        <button class="view-profile-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full" data-uid="${otherUserId}">Ver Perfil</button>
                     </div>`;
                 }).join('');
             } else {
@@ -799,32 +848,64 @@
             feather.replace();
         }
 
-        async function sendFriendRequest({uid, name, photo}) {
-            const batch = writeBatch(db);
-            const senderRef = doc(db, 'users', currentUser.uid, 'friends', uid);
-            batch.set(senderRef, { status: 'pending_sent', displayName: name, photoURL: photo || '' });
-            const receiverRef = doc(db, 'users', uid, 'friends', currentUser.uid);
-            batch.set(receiverRef, { status: 'pending_received', displayName: userProfile.displayName, photoURL: userProfile.photoURL || '', username: userProfile.username });
-            try { await batch.commit(); showToast("Pedido de amizade enviado!", "success"); } catch (error) { console.error("Erro ao enviar pedido:", error); showToast("Erro ao enviar pedido.", "error"); }
+        async function sendFriendRequest({uid, name, photo, username}) {
+            if (!userProfile) {
+                 showToast("Seu perfil ainda está carregando. Tente novamente.", "warning");
+                 return;
+            }
+            const friendshipId = [currentUser.uid, uid].sort().join('_');
+            const friendshipRef = doc(db, 'friendships', friendshipId);
+
+            try {
+                const otherUserDoc = await getDoc(doc(db, 'users', uid));
+                if (!otherUserDoc.exists()) {
+                    showToast("Erro: Usuário não encontrado.", "error");
+                    return;
+                }
+                const otherUserData = otherUserDoc.data();
+
+                await setDoc(friendshipRef, {
+                    users: [currentUser.uid, uid],
+                    user_info: {
+                        [currentUser.uid]: { displayName: userProfile.displayName, photoURL: userProfile.photoURL || '', username: userProfile.username },
+                        [uid]: { displayName: otherUserData.displayName, photoURL: otherUserData.photoURL || '', username: otherUserData.username },
+                    },
+                    status: 'pending',
+                    initiatedBy: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+                showToast("Pedido de amizade enviado!", "success");
+            } catch (error) {
+                console.error("Erro ao enviar pedido:", error);
+                showToast("Erro ao enviar pedido.", "error");
+            }
         }
         
-        async function acceptFriendRequest(requesterId) {
-            const batch = writeBatch(db);
-            const data = { status: 'accepted', since: serverTimestamp() };
-            const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
-            batch.update(userRef, data);
-            const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
-            batch.update(requesterRef, data);
-            try { await batch.commit(); showToast("Amizade aceita!", "success"); } catch (error) { console.error("Erro ao aceitar pedido:", error); showToast("Erro ao aceitar pedido.", "error"); }
+        async function acceptFriendRequest(otherUserId) {
+            const friendshipId = [currentUser.uid, otherUserId].sort().join('_');
+            const friendshipRef = doc(db, 'friendships', friendshipId);
+            try {
+                await updateDoc(friendshipRef, {
+                    status: 'accepted',
+                    acceptedAt: serverTimestamp()
+                });
+                showToast("Amizade aceita!", "success");
+            } catch (error) {
+                console.error("Erro ao aceitar pedido:", error);
+                showToast("Erro ao aceitar pedido.", "error");
+            }
         }
 
-        async function rejectFriendRequest(requesterId) {
-             const batch = writeBatch(db);
-            const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
-            batch.delete(userRef);
-            const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
-            batch.delete(requesterRef);
-            try { await batch.commit(); showToast("Pedido recusado.", "info"); } catch (error) { console.error("Erro ao recusar pedido:", error); showToast("Erro ao recusar pedido.", "error"); }
+        async function rejectFriendRequest(otherUserId) {
+            const friendshipId = [currentUser.uid, otherUserId].sort().join('_');
+            const friendshipRef = doc(db, 'friendships', friendshipId);
+            try {
+                await deleteDoc(friendshipRef);
+                showToast("Pedido recusado.", "info");
+            } catch (error) {
+                console.error("Erro ao recusar pedido:", error);
+                showToast("Erro ao recusar pedido.", "error");
+            }
         }
         
         async function renderProfileView(profileId) {
@@ -847,16 +928,25 @@
                 if (isCurrentUser) {
                     actionButtonHtml = `<button id="edit-profile-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0"><i data-feather="edit-2" class="w-4 h-4"></i> Editar Perfil</button>`;
                 } else {
-                    const friendship = friendships.find(f => f.id === profileData.uid);
+                    const friendship = friendships.find(f => f.users.includes(profileData.uid));
                     if (friendship) {
-                        if (friendship.status === 'accepted') actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-emerald-400 font-bold"><i data-feather="check-circle"></i> Amigos</span>`;
-                        else if (friendship.status === 'pending_sent') actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-gray-400 font-bold"><i data-feather="send"></i> Pedido Enviado</span>`;
-                        else if (friendship.status === 'pending_received') actionButtonHtml = `<div class="mt-8 flex gap-2"><button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Aceitar</button><button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Recusar</button></div>`;
+                        if (friendship.status === 'accepted') {
+                            actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-emerald-400 font-bold"><i data-feather="check-circle"></i> Amigos</span>`;
+                        } else if (friendship.status === 'pending') {
+                            if (friendship.initiatedBy === currentUser.uid) {
+                                actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-gray-400 font-bold"><i data-feather="send"></i> Pedido Enviado</span>`;
+                            } else {
+                                actionButtonHtml = `<div class="mt-8 flex gap-2"><button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Aceitar</button><button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Recusar</button></div>`;
+                            }
+                        }
                     } else {
-                         actionButtonHtml = `<button class="send-friend-request-btn w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0" data-uid="${profileData.uid}" data-name="${profileData.displayName}" data-photo="${profileData.photoURL || ''}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar Amigo</button>`;
+                         actionButtonHtml = `<button class="send-friend-request-btn w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0" data-uid="${profileData.uid}" data-name="${profileData.displayName}" data-photo="${profileData.photoURL || ''}" data-username="${profileData.username}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar Amigo</button>`;
                     }
                 }
                 const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${(profileData.displayName || 'C')[0].toUpperCase()}`;
+
+                // Lógica para ocultar o e-mail
+                const emailHtml = isCurrentUser ? `<p class="text-gray-400">${profileData.email}</p>` : '';
 
                 const displayHtml = `
                      <div id="display-profile">
@@ -865,7 +955,7 @@
                             <div class="text-center sm:text-left">
                                 <h2 class="text-3xl font-bold text-white">${profileData.displayName}</h2>
                                 <p class="text-lg text-emerald-400 font-mono">@${profileData.username}</p>
-                                <p class="text-gray-400">${profileData.email}</p>
+                                ${emailHtml}
                                 <p class="mt-4 text-gray-300">${profileData.bio || 'Nenhuma bio definida.'}</p>
                             </div>
                         </div>
@@ -912,3 +1002,4 @@
     </script>
 </body>
 </html>
+
