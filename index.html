@@ -92,75 +92,79 @@
         <!-- Tela de Autenticação -->
         <div id="auth-view" class="min-h-screen flex flex-col items-center justify-center p-4">
              <div class="w-full max-w-md">
-                <header class="text-center mb-8">
-                    <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
-                        <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
-                        CineLog
-                    </h1>
-                    <p class="text-gray-400 mt-2">Seu diário de filmes, agora na nuvem.</p>
-                </header>
+                 <header class="text-center mb-8">
+                     <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
+                         <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
+                         CineLog
+                     </h1>
+                     <p class="text-gray-400 mt-2">Seu diário de filmes, agora na nuvem.</p>
+                 </header>
                 
-                <!-- Formulário de Login -->
-                <form id="login-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Login</h2>
-                    <div class="mb-4">
-                        <label for="login-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
-                        <input type="email" id="login-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <div class="mb-6">
-                        <label for="login-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
-                        <input type="password" id="login-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors">Entrar</button>
-                    <p class="text-center text-gray-400 text-sm mt-4">
-                        Não tem uma conta? <a href="#" id="show-register-link" class="font-bold text-emerald-400 hover:underline">Cadastre-se</a>
-                    </p>
-                </form>
+                 <!-- Formulário de Login -->
+                 <form id="login-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg">
+                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Login</h2>
+                     <div class="mb-4">
+                         <label for="login-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
+                         <input type="email" id="login-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                     </div>
+                     <div class="mb-6">
+                         <label for="login-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
+                         <input type="password" id="login-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                     </div>
+                     <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors">Entrar</button>
+                     <p class="text-center text-gray-400 text-sm mt-4">
+                         Não tem uma conta? <a href="#" id="show-register-link" class="font-bold text-emerald-400 hover:underline">Cadastre-se</a>
+                     </p>
+                 </form>
 
-                <!-- Formulário de Cadastro -->
-                <form id="register-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg hidden">
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Cadastro</h2>
-                    <div class="mb-4">
-                        <label for="register-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
-                        <input type="email" id="register-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <div class="mb-6">
-                        <label for="register-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
-                        <input type="password" id="register-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    </div>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">Criar Conta</button>
-                    <p class="text-center text-gray-400 text-sm mt-4">
-                        Já tem uma conta? <a href="#" id="show-login-link" class="font-bold text-emerald-400 hover:underline">Faça Login</a>
-                    </p>
-                </form>
-                 <div id="auth-loading" class="text-center py-16 hidden">
-                    <i data-feather="loader" class="w-12 h-12 mx-auto animate-spin text-emerald-400"></i>
-                    <p class="mt-4 text-gray-400">Autenticando...</p>
-                </div>
-                <div id="auth-error-container"></div>
-            </div>
+                 <!-- Formulário de Cadastro -->
+                 <form id="register-form" class="bg-gray-800/50 p-8 rounded-lg shadow-lg hidden">
+                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Cadastro</h2>
+                     <div class="mb-4">
+                         <label for="register-email" class="block text-gray-400 text-sm font-bold mb-2">Email</label>
+                         <input type="email" id="register-email" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                     </div>
+                     <div class="mb-6">
+                         <label for="register-password" class="block text-gray-400 text-sm font-bold mb-2">Senha</label>
+                         <input type="password" id="register-password" required class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                     </div>
+                     <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">Criar Conta</button>
+                     <p class="text-center text-gray-400 text-sm mt-4">
+                         Já tem uma conta? <a href="#" id="show-login-link" class="font-bold text-emerald-400 hover:underline">Faça Login</a>
+                     </p>
+                 </form>
+                  <div id="auth-loading" class="text-center py-16 hidden">
+                     <i data-feather="loader" class="w-12 h-12 mx-auto animate-spin text-emerald-400"></i>
+                     <p class="mt-4 text-gray-400">Autenticando...</p>
+                 </div>
+                 <div id="auth-error-container"></div>
+             </div>
         </div>
 
         <!-- Conteúdo Principal da Aplicação -->
         <div id="app-content" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <header class="text-center mb-8">
-                 <div class="flex justify-center items-center gap-4 mb-2">
-                    <h1 class="text-4xl font-extrabold text-white flex items-center justify-center gap-3">
-                        <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
-                        CineLog
-                    </h1>
+            <header class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                <div class="flex items-center gap-3">
+                     <i data-feather="film" class="w-10 h-10 text-emerald-400"></i>
+                     <h1 class="text-4xl font-extrabold text-white">CineLog</h1>
                 </div>
-                <div id="user-info" class="text-center">
-                    <span id="user-email" class="text-gray-400 text-sm"></span>
-                    <button id="logout-btn" class="ml-4 text-red-400 hover:text-red-300 text-sm font-bold">(Sair)</button>
-                </div>
+                 <div id="user-info" class="flex items-center gap-3 cursor-pointer" title="Ver meu perfil">
+                     <div class="text-right">
+                        <span id="user-display-name" class="font-bold text-white"></span>
+                        <p id="user-email" class="text-gray-400 text-xs"></p>
+                     </div>
+                     <img id="user-avatar" src="" class="w-12 h-12 rounded-full object-cover bg-gray-700">
+                     <button id="logout-btn" class="text-gray-400 hover:text-white" title="Sair"><i data-feather="log-out" class="w-5 h-5"></i></button>
+                 </div>
             </header>
 
-            <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-md mx-auto">
-                <button id="nav-feed" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
-                <button id="nav-list" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
-                <button id="nav-stats" class="nav-button w-1/3 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+            <nav class="flex justify-center bg-gray-800/50 rounded-full p-1 mb-8 max-w-xl mx-auto">
+                 <button id="nav-feed" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors bg-emerald-500 text-white">Início</button>
+                 <button id="nav-list" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Minha Lista</button>
+                 <button id="nav-stats" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Estatísticas</button>
+                 <button id="nav-friends" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Amigos</button>
+                 <button id="nav-profile" class="nav-button w-1/5 rounded-full py-2 px-4 text-sm font-medium transition-colors text-gray-300">Perfil</button>
             </nav>
             
             <main>
@@ -194,6 +198,33 @@
                 </div>
 
                 <div id="stats-view" class="hidden max-w-4xl mx-auto"></div>
+                
+                <div id="profile-view" class="hidden max-w-2xl mx-auto bg-gray-800/50 p-8 rounded-lg shadow-lg">
+                     <div id="profile-content"></div> <!-- Conteúdo do perfil será renderizado aqui -->
+                </div>
+
+                <!-- Nova Visualização de Amigos -->
+                <div id="friends-view" class="hidden max-w-4xl mx-auto">
+                    <form id="user-search-form" class="flex gap-2 mb-8 max-w-lg mx-auto">
+                        <input type="text" id="user-search-input" placeholder="Buscar usuários pelo nome de perfil..." class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg transition-colors flex items-center justify-center">
+                            <i data-feather="search" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                    <div id="user-search-results" class="mb-8"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="user-plus" class="text-yellow-400"></i> Pedidos de Amizade</h2>
+                            <div id="friend-requests-container"></div>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><i data-feather="users" class="text-emerald-400"></i> Meus Amigos</h2>
+                            <div id="friends-list-container"></div>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
@@ -228,7 +259,11 @@
             doc,
             deleteDoc,
             setDoc,
-            serverTimestamp
+            serverTimestamp,
+            getDoc,
+            where,
+            getDocs,
+            writeBatch
         } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -249,848 +284,556 @@
         const TMDB_API_KEY = '5e264941432a0e290b364a1636205f1b';
         
         const app = {
-                nav: { 
-                    feed: document.getElementById('nav-feed'), 
-                    list: document.getElementById('nav-list'),
-                    stats: document.getElementById('nav-stats') 
-                },
-                views: { 
-                    feed: document.getElementById('feed-view'), 
-                    list: document.getElementById('list-view'),
-                    stats: document.getElementById('stats-view')
-                },
-                auth: {
-                    view: document.getElementById('auth-view'),
-                    loading: document.getElementById('auth-loading'),
-                    loginForm: document.getElementById('login-form'),
-                    registerForm: document.getElementById('register-form'),
-                    showLoginLink: document.getElementById('show-login-link'),
-                    showRegisterLink: document.getElementById('show-register-link'),
-                    logoutBtn: document.getElementById('logout-btn'),
-                    userEmail: document.getElementById('user-email'),
-                    errorContainer: document.getElementById('auth-error-container')
-                },
-                appContent: document.getElementById('app-content'),
-                search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
-                carouselsContainer: document.getElementById('carousels-container'),
-                recommendation: {
-                    btn: document.getElementById('recommendation-btn'),
-                    container: document.getElementById('recommendation-container')
-                },
-                list: { container: document.getElementById('watched-list'), placeholder: document.getElementById('list-placeholder') },
-                toast: { element: document.getElementById('toast'), message: document.getElementById('toast-message') },
-                modal: { overlay: document.getElementById('movie-modal'), contentWrapper: document.getElementById('modal-content-wrapper') }
-            };
-            
-            let watchedList = [];
-            let lastRecommendationId = null;
-            let currentUser = null;
-            let unsubscribeFromWatchedList = null;
-            let currentModalMovieData = null; 
-            
-            function initAuth() {
-                setupAuthEventListeners(); 
-                app.auth.loading.classList.remove('hidden');
-                app.auth.loginForm.classList.add('hidden');
-                app.auth.registerForm.classList.add('hidden');
-                app.auth.errorContainer.innerHTML = '';
+              nav: { 
+                  feed: document.getElementById('nav-feed'), 
+                  list: document.getElementById('nav-list'),
+                  stats: document.getElementById('nav-stats'),
+                  friends: document.getElementById('nav-friends'),
+                  profile: document.getElementById('nav-profile')
+              },
+              views: { 
+                  feed: document.getElementById('feed-view'), 
+                  list: document.getElementById('list-view'),
+                  stats: document.getElementById('stats-view'),
+                  friends: document.getElementById('friends-view'),
+                  profile: document.getElementById('profile-view')
+              },
+              auth: {
+                  view: document.getElementById('auth-view'),
+                  loading: document.getElementById('auth-loading'),
+                  loginForm: document.getElementById('login-form'),
+                  registerForm: document.getElementById('register-form'),
+                  showLoginLink: document.getElementById('show-login-link'),
+                  showRegisterLink: document.getElementById('show-register-link'),
+                  logoutBtn: document.getElementById('logout-btn'),
+                  userEmail: document.getElementById('user-email'),
+                  userDisplayName: document.getElementById('user-display-name'),
+                  userAvatar: document.getElementById('user-avatar'),
+                  errorContainer: document.getElementById('auth-error-container'),
+                  userInfo: document.getElementById('user-info')
+              },
+              profile: {
+                  content: document.getElementById('profile-content')
+              },
+              friends: {
+                  userSearchForm: document.getElementById('user-search-form'),
+                  userSearchInput: document.getElementById('user-search-input'),
+                  userSearchResults: document.getElementById('user-search-results'),
+                  requestsContainer: document.getElementById('friend-requests-container'),
+                  listContainer: document.getElementById('friends-list-container')
+              },
+              appContent: document.getElementById('app-content'),
+              search: { form: document.getElementById('search-form'), input: document.getElementById('search-input') },
+              carouselsContainer: document.getElementById('carousels-container'),
+              recommendation: {
+                  btn: document.getElementById('recommendation-btn'),
+                  container: document.getElementById('recommendation-container')
+              },
+              list: { container: document.getElementById('watched-list'), placeholder: document.getElementById('list-placeholder') },
+              toast: { element: document.getElementById('toast'), message: document.getElementById('toast-message') },
+              modal: { overlay: document.getElementById('movie-modal'), contentWrapper: document.getElementById('modal-content-wrapper') }
+        };
+        
+        let watchedList = [];
+        let friendships = [];
+        let lastRecommendationId = null;
+        let currentUser = null;
+        let userProfile = null;
+        let unsubscribeFromWatchedList = null;
+        let unsubscribeFromProfile = null; 
+        let unsubscribeFromFriends = null;
+        let currentModalMovieData = null; 
+        let currentlyViewingProfileId = null;
+        
+        function initAuth() {
+            setupAuthEventListeners(); 
+            app.auth.loading.classList.remove('hidden');
+            app.auth.loginForm.classList.add('hidden');
+            app.auth.registerForm.classList.add('hidden');
+            app.auth.errorContainer.innerHTML = '';
 
-                const authTimeout = setTimeout(() => {
-                    if (!currentUser) { // Only show error if still not authenticated
-                        app.auth.loading.classList.add('hidden');
-                        app.auth.errorContainer.innerHTML = `
-                            <div class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center mt-4">
-                                <h3 class="font-bold">Falha na Conexão</h3>
-                                <p class="text-sm mt-2">Não foi possível conectar ao sistema de autenticação. Verifique sua conexão e as configurações do Firebase.</p>
-                            </div>
-                        `;
-                    }
-                }, 8000);
-
-                onAuthStateChanged(auth, user => {
-                    clearTimeout(authTimeout);
+            const authTimeout = setTimeout(() => {
+                if (!currentUser) { 
                     app.auth.loading.classList.add('hidden');
-                    if (user) {
-                        currentUser = user;
-                        app.auth.view.classList.add('hidden');
-                        app.appContent.classList.remove('hidden');
-                        app.auth.userEmail.textContent = user.email;
-                        
-                        setupRealtimeListener(user.uid);
-                        initApp();
-                    } else {
-                        currentUser = null;
-                        app.appContent.classList.add('hidden');
-                        app.auth.view.classList.remove('hidden');
-                        app.auth.loginForm.classList.remove('hidden');
-                        app.auth.registerForm.classList.add('hidden');
-
-                        if (unsubscribeFromWatchedList) {
-                            unsubscribeFromWatchedList(); 
-                        }
-                        watchedList = [];
-                        renderWatchedList();
-                    }
-                });
-            }
-
-            function setupRealtimeListener(userId) {
-                if (unsubscribeFromWatchedList) {
-                    unsubscribeFromWatchedList();
+                    app.auth.errorContainer.innerHTML = `<div class="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center mt-4"><h3 class="font-bold">Falha na Conexão</h3><p class="text-sm mt-2">Não foi possível conectar ao sistema de autenticação.</p></div>`;
                 }
-                const watchedMoviesRef = collection(db, 'users', userId, 'watchedMovies');
-                const q = query(watchedMoviesRef);
+            }, 8000);
 
-                unsubscribeFromWatchedList = onSnapshot(q, (snapshot) => {
-                    watchedList = snapshot.docs.map(doc => ({...doc.data(), docId: doc.id }));
-                    renderWatchedList();
-                    if (!app.views.stats.classList.contains('hidden')) {
-                        renderStatsDashboard();
-                    }
-                }, (error) => {
-                    console.error("Erro ao carregar a lista de filmes do Firestore:", error);
-                    let message = "Erro ao carregar sua lista.";
-                    if (error.code === 'permission-denied') {
-                        message = "Erro de permissão. Verifique as regras de segurança do Firestore.";
-                    }
-                    showToast(message, "error");
-                });
-            }
-
-            function initApp() {
-                if (!TMDB_API_KEY) showApiWarning();
-                setupAppEventListeners(); 
-                loadFeed();
-                feather.replace();
-            }
-
-            function showApiWarning() {
-                app.carouselsContainer.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
-            }
-
-            function setupAuthEventListeners() {
-                app.auth.loginForm.addEventListener('submit', handleLogin);
-                app.auth.registerForm.addEventListener('submit', handleRegister);
-                app.auth.showRegisterLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    app.auth.loginForm.classList.add('hidden');
-                    app.auth.registerForm.classList.remove('hidden');
-                });
-                 app.auth.showLoginLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    app.auth.registerForm.classList.add('hidden');
+            onAuthStateChanged(auth, user => {
+                clearTimeout(authTimeout);
+                app.auth.loading.classList.add('hidden');
+                if (user) {
+                    currentUser = user;
+                    app.auth.view.classList.add('hidden');
+                    app.appContent.classList.remove('hidden');
+                    
+                    setupRealtimeListener(user.uid);
+                    setupProfileListener(user.uid);
+                    setupFriendsListener(user.uid);
+                    initApp();
+                } else {
+                    currentUser = null;
+                    userProfile = null;
+                    app.appContent.classList.add('hidden');
+                    app.auth.view.classList.remove('hidden');
                     app.auth.loginForm.classList.remove('hidden');
-                });
-            }
+                    app.auth.registerForm.classList.add('hidden');
 
-            function setupAppEventListeners() {
-                app.nav.feed.addEventListener('click', () => switchView('feed'));
-                app.nav.list.addEventListener('click', () => switchView('list'));
-                app.nav.stats.addEventListener('click', () => switchView('stats'));
-                app.auth.logoutBtn.addEventListener('click', handleLogout);
-                app.search.form.addEventListener('submit', handleSearch);
-                app.recommendation.btn.addEventListener('click', handleRecommendationRequest);
-                
-                document.querySelector('main').addEventListener('click', (event) => {
-                    const addBtn = event.target.closest('.add-movie-btn');
-                    const removeBtn = event.target.closest('.remove-movie-btn');
-                    const card = event.target.closest('.movie-card');
-                    const scrollBtn = event.target.closest('.scroll-btn');
-
-                    if (addBtn) { event.stopPropagation(); handleAddMovieClick(addBtn); } 
-                    else if (removeBtn) { event.stopPropagation(); handleRemoveMovie(removeBtn); } 
-                    else if (scrollBtn) { event.stopPropagation(); handleCarouselScroll(scrollBtn); }
-                    else if (card) { handleCardClick(card); }
-                });
-
-                app.modal.overlay.addEventListener('click', (event) => {
-                    const closeBtn = event.target.closest('.modal-close-btn');
-                    const saveReviewBtn = event.target.closest('.save-review-btn');
-                    const editReviewBtn = event.target.closest('.edit-review-btn');
-                    const addBtnInModal = event.target.closest('.add-movie-btn');
-
-                    if (event.target === app.modal.overlay || closeBtn) closeModal();
-                    if (saveReviewBtn) handleSaveReview(saveReviewBtn);
-                    if (editReviewBtn) handleEditReviewClick(editReviewBtn);
-                    if (addBtnInModal) handleAddMovieClick(addBtnInModal);
-                });
-            }
-
-            async function handleLogin(e) {
-                e.preventDefault();
-                const email = app.auth.loginForm.querySelector('#login-email').value;
-                const password = app.auth.loginForm.querySelector('#login-password').value;
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } catch (error) {
-                    console.error("Erro no login:", error.code);
-                    let message = 'Ocorreu um erro ao tentar fazer login.';
-                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        message = 'E-mail ou senha incorretos. Verifique e tente novamente.';
-                    } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid') {
-                        message = 'Chave de API do Firebase inválida. Verifique a configuração.';
-                    }
-                    showToast(message, 'error');
-                }
-            }
-
-            async function handleRegister(e) {
-                e.preventDefault();
-                const email = app.auth.registerForm.querySelector('#register-email').value;
-                const password = app.auth.registerForm.querySelector('#register-password').value;
-                 try {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                } catch (error) {
-                    console.error("Erro no cadastro:", error.code);
-                    let message = 'Ocorreu um erro ao tentar criar a conta.';
-                    if (error.code === 'auth/email-already-in-use') {
-                        message = 'Este e-mail já está cadastrado.';
-                    } else if (error.code === 'auth/weak-password') {
-                        message = 'A senha precisa ter pelo menos 6 caracteres.';
-                    } else if (error.code === 'auth/invalid-email') {
-                        message = 'O formato do e-mail é inválido.';
-                    }
-                    showToast(message, 'error');
-                }
-            }
-
-            async function handleLogout() {
-                try {
-                    await signOut(auth);
-                } catch (error) {
-                    console.error("Erro no logout:", error);
-                     showToast(`Erro: ${error.message}`, 'error');
-                }
-            }
-
-            function switchView(viewName) {
-                Object.values(app.views).forEach(view => view.classList.add('hidden'));
-                Object.values(app.nav).forEach(button => {
-                    button.classList.remove('bg-emerald-500', 'text-white');
-                    button.classList.add('text-gray-300');
-                });
-
-                app.views[viewName].classList.remove('hidden');
-                app.nav[viewName].classList.add('bg-emerald-500', 'text-white');
-                app.nav[viewName].classList.remove('text-gray-300');
-
-                if (viewName === 'stats') {
-                    renderStatsDashboard();
-                } else if (viewName === 'feed') {
-                    app.search.input.value = '';
-                    loadFeed();
-                }
-            }
-            
-            async function fetchTMDB(endpoint) {
-                const separator = endpoint.includes('?') ? '&' : '?';
-                const url = `https://api.themoviedb.org/3/${endpoint}${separator}api_key=${TMDB_API_KEY}&language=pt-BR`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Falha ao buscar dados do endpoint: ${endpoint}`);
-                const data = await response.json();
-                return data;
-            }
-
-            async function loadFeed() {
-                app.recommendation.container.innerHTML = '';
-                lastRecommendationId = null;
-                const currentYear = new Date().getFullYear();
-                app.carouselsContainer.innerHTML = renderCarouselSkeleton('Destaques do Dia') 
-                                          + renderCarouselSkeleton('Destaques da Semana') 
-                                          + renderCarouselSkeleton('Lançamentos') 
-                                          + renderCarouselSkeleton(`Melhores de ${currentYear}`);
-                feather.replace();
-
-                try {
-                    const [trendingDay, trendingWeek, releases, bestOfYear] = await Promise.all([
-                        fetchTMDB('trending/movie/day'),
-                        fetchTMDB('trending/movie/week'),
-                        fetchTMDB('movie/now_playing?region=BR'),
-                        fetchTMDB(`discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=${currentYear}`)
-                    ]);
+                    if (unsubscribeFromWatchedList) unsubscribeFromWatchedList(); 
+                    if (unsubscribeFromProfile) unsubscribeFromProfile();
+                    if (unsubscribeFromFriends) unsubscribeFromFriends();
                     
-                    app.carouselsContainer.innerHTML = 
-                        renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel') +
-                        renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel') +
-                        renderCarousel(releases.results, 'Em Cartaz', 'releases-carousel') +
-                        renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel');
-                    
-                    feather.replace();
-                } catch (error) {
-                    console.error("Erro ao carregar o feed:", error);
-                    app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`;
+                    watchedList = [];
+                    friendships = [];
+                    renderWatchedList();
                 }
-            }
-            
-            async function handleSearch(event) {
-                event.preventDefault();
-                const query = app.search.input.value.trim();
-                app.recommendation.container.innerHTML = '';
-                if (!query) { 
-                    loadFeed(); 
-                    return; 
-                }
-                app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`;
-                try {
-                    const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`);
-                    if (data.results.length === 0) {
-                        app.carouselsContainer.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado para "${query}".</p>`;
-                        return;
-                    }
-                    const movieCards = data.results.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join('');
-                    app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`;
-                    feather.replace();
-                } catch (error) {
-                    console.error("Erro na busca:", error);
-                    app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`;
-                }
-            }
+            });
+        }
 
-            async function handleRecommendationRequest() {
-                const btn = app.recommendation.btn;
-                btn.disabled = true;
-                btn.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin"></i>Analisando seu gosto...';
-                feather.replace();
+        function setupProfileListener(userId) {
+             if (unsubscribeFromProfile) unsubscribeFromProfile();
+             const profileRef = doc(db, 'users', userId);
+             unsubscribeFromProfile = onSnapshot(profileRef, (doc) => {
+                 if (doc.exists()) {
+                     userProfile = { uid: userId, ...doc.data() };
+                 } else {
+                     createProfileIfNotExists(currentUser);
+                     userProfile = { uid: userId, displayName: currentUser.email, bio: '', photoURL: '' };
+                 }
+                 updateHeaderUI();
+             }, (error) => {
+                 console.error("Erro ao carregar perfil:", error);
+                 showToast("Não foi possível carregar seu perfil.", "error");
+             });
+        }
+        
+        function setupFriendsListener(userId) {
+            if (unsubscribeFromFriends) unsubscribeFromFriends();
+            const friendsRef = collection(db, 'users', userId, 'friends');
+            unsubscribeFromFriends = onSnapshot(query(friendsRef), (snapshot) => {
+                friendships = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderFriendsView();
+            }, (error) => {
+                console.error("Erro ao carregar amigos:", error);
+                showToast("Erro ao carregar sua lista de amigos.", "error");
+            });
+        }
 
-                try {
-                    const favoriteMovies = watchedList.filter(movie => movie.rating >= 4);
-                    if (favoriteMovies.length < 3) {
-                        showToast("Avalie pelo menos 3 filmes com 4+ estrelas para receber recomendações.", "warning");
-                        return;
-                    }
-
-                    const watchedIds = new Set(watchedList.map(m => m.id));
-                    const seedMovie = favoriteMovies[Math.floor(Math.random() * favoriteMovies.length)];
-                    
-                    const data = await fetchTMDB(`movie/${seedMovie.id}/recommendations`);
-                    let potentialMovies = data.results.filter(movie => 
-                        !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path
-                    );
-
-                    let recommendedMovie = null;
-
-                    if (potentialMovies.length > 0) {
-                        recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
-                    } else {
-                        showToast("Buscando de forma mais ampla...", "info");
-                         if (!seedMovie.genres) {
-                            await renderStatsDashboard(true);
-                            loadWatchedList();
-                            const updatedSeedMovie = watchedList.find(m => m.id === seedMovie.id);
-                            if (!updatedSeedMovie || !updatedSeedMovie.genres) {
-                                showToast("Não foi possível identificar o gênero do seu filme favorito.", "warning");
-                                return;
-                            }
-                            seedMovie.genres = updatedSeedMovie.genres;
-                        }
-
-                        const genreQuery = seedMovie.genres.map(g => g.id).join('|');
-                        const fallbackData = await fetchTMDB(`discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&vote_count.gte=100`);
-                        potentialMovies = fallbackData.results.filter(movie => 
-                            !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path
-                        );
-                        
-                        if(potentialMovies.length > 0) {
-                           recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)];
-                        }
-                    }
-
-                    if (recommendedMovie) {
-                        lastRecommendationId = recommendedMovie.id;
-                        renderRecommendation(recommendedMovie, seedMovie);
-                    } else {
-                        showToast("Não encontramos uma nova recomendação no momento. Tente mais tarde!", "info");
-                        lastRecommendationId = null;
-                    }
-
-                } catch (error) {
-                    console.error("Erro ao gerar recomendação:", error);
-                    showToast("Ocorreu um erro ao buscar sua recomendação.", "error");
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i data-feather="star" class="w-5 h-5"></i> Me recomende um filme';
-                    feather.replace();
-                }
-            }
-            
-            function renderRecommendation(movie, seedMovie) {
-                const container = app.recommendation.container;
-                const movieCardHTML = createMovieCard(movie, false);
-                container.innerHTML = `
-                    <section class="mb-8 animate-fade-in">
-                        <h2 class="text-2xl font-bold text-white mb-2">Recomendado para Você</h2>
-                        <p class="text-purple-300 text-sm mb-4">Porque você gostou de <span class="font-bold">${seedMovie.title}</span>...</p>
-                        <div class="max-w-xs">
-                           ${movieCardHTML}
-                        </div>
-                    </section>
-                `;
-                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                feather.replace();
-            }
-
-            async function handleAddMovieClick(button) {
-                const movieId = parseInt(button.dataset.id, 10);
-                const movieData = await fetchTMDB(`movie/${movieId}`);
-                openReviewModal(movieData);
-            }
-
-            async function handleSaveReview(button) {
-                if (!currentUser) {
-                    showToast("Você precisa estar logado para salvar filmes.", "error");
-                    return;
-                }
-
-                button.disabled = true;
-                button.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin mx-auto"></i>';
-                feather.replace();
-
-                try {
-                    const movieId = parseInt(button.dataset.id, 10);
-                    const rating = parseInt(document.getElementById('movie-rating').value, 10);
-                    const reviewText = document.getElementById('movie-review-text').value.trim();
-
-                    const movieInList = watchedList.find(m => m.id === movieId);
-                    
-                    const movieData = currentModalMovieData;
-                    if (!movieData || movieData.id !== movieId) {
-                        throw new Error("Dados do filme no modal estão inconsistentes.");
-                    }
-                    
-                    const movieToStore = { 
-                        id: movieData.id, 
-                        title: movieData.title, 
-                        poster_path: movieData.poster_path, 
-                        release_date: movieData.release_date,
-                        rating: rating,
-                        review: reviewText,
-                        runtime: movieData.runtime,
-                        genres: movieData.genres,
-                        addedAt: serverTimestamp()
-                    };
-
-                    const collectionRef = collection(db, 'users', currentUser.uid, 'watchedMovies');
-                    let toastMessage = "";
-                    if (movieInList && movieInList.docId) {
-                        const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieInList.docId);
-                        await setDoc(docRef, movieToStore, { merge: true }); 
-                        toastMessage = "Avaliação atualizada!";
-                    } else {
-                        await addDoc(collectionRef, movieToStore);
-                        toastMessage = `"${movieToStore.title}" adicionado!`;
-                    }
-                    
-                    closeModal(() => {
-                        showToast(toastMessage, 'success');
-                    });
-
-                } catch (error) {
-                    console.error("Erro ao salvar no Firestore:", error);
-                    let message = "Erro ao salvar. Tente novamente.";
-                    if (error.code === 'permission-denied') {
-                        message = "Erro de permissão. Verifique as regras de segurança do Firestore.";
-                    }
-                    showToast(message, 'error');
-                    button.disabled = false;
-                    button.innerHTML = 'Salvar Avaliação';
-                    feather.replace();
-                }
-            }
-
-            async function handleRemoveMovie(button) {
-                if (!currentUser) {
-                    showToast("Você precisa estar logado.", "error");
-                    return;
-                }
-                const movieId = parseInt(button.dataset.id, 10);
-                const movieToRemove = watchedList.find(m => m.id === movieId);
-                if (!movieToRemove || !movieToRemove.docId) return;
-
-                try {
-                    const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieToRemove.docId);
-                    await deleteDoc(docRef);
-                    showToast(`"${movieToRemove.title}" removido.`, 'info');
-                } catch (error) {
-                    console.error("Erro ao remover do Firestore:", error);
-                    showToast("Erro ao remover. Tente novamente.", 'error');
-                }
-            }
-            
-            async function handleEditReviewClick(button) {
-                const movieId = parseInt(button.dataset.id, 10);
-                const movieInList = watchedList.find(m => m.id === movieId);
-                const movieData = await fetchTMDB(`movie/${movieId}`);
-                openReviewModal(movieData, movieInList);
-            }
-
-            function handleCarouselScroll(button) {
-                const direction = parseInt(button.dataset.direction, 10);
-                const carouselId = button.dataset.carouselId;
-                const carousel = document.getElementById(carouselId);
-                if (!carousel) return;
-                const scrollAmount = carousel.clientWidth * 0.8;
-                carousel.scrollLeft += scrollAmount * direction;
-            }
-            
-            function renderCarousel(movies, title, id) {
-                if (!movies || movies.length === 0) return '';
-                const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie, false)}</div>`).join('');
-                return `
-                    <section class="mb-8 carousel-container relative">
-                        <h2 class="text-2xl font-bold text-white mb-4">${title}</h2>
-                        <div id="${id}" class="carousel">${movieCards}</div>
-                        <button class="scroll-btn left-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="-1" data-carousel-id="${id}"><i data-feather="chevron-left" class="w-6 h-6 pointer-events-none"></i></button>
-                        <button class="scroll-btn right-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="1" data-carousel-id="${id}"><i data-feather="chevron-right" class="w-6 h-6 pointer-events-none"></i></button>
-                    </section>`;
-            }
-
-            function renderWatchedList() {
-                if (watchedList.length === 0) {
-                    app.list.placeholder.classList.remove('hidden');
-                    app.list.container.innerHTML = '';
-                } else {
-                    app.list.placeholder.classList.add('hidden');
-                    const movieCards = watchedList.map(movie => createMovieCard(movie, true)).join('');
-                    app.list.container.innerHTML = movieCards;
-                }
-                document.querySelectorAll('.add-movie-btn').forEach(btn => {
-                    const movieId = parseInt(btn.dataset.id, 10);
-                    const isAdded = watchedList.some(m => m.id === movieId);
-                    updateAllButtonsForMovie(movieId, isAdded);
-                });
-                feather.replace();
-            }
-
-            function createMovieCard(movie, isWatched = false) {
-                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
-                const isAlreadyAdded = watchedList.some(m => m.id === movie.id);
-                
-                let overlayContent = '';
-                if(isWatched) {
-                    const watchedMovie = watchedList.find(m => m.id === movie.id);
-                    const ratingHTML = watchedMovie && watchedMovie.rating > 0
-                        ? `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                ${watchedMovie.rating.toFixed(0)}
-                           </div>`
-                        : '';
-                    overlayContent = `
-                        ${ratingHTML}
-                        <button data-id="${movie.id}" class="remove-movie-btn absolute top-2 right-2 bg-red-600/80 hover:bg-red-700/80 p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-110 z-10"><i data-feather="trash-2" class="w-4 h-4 text-white pointer-events-none"></i></button>
-                    `;
-                } else {
-                    overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300'}" ${isAlreadyAdded ? 'disabled' : ''}>
-                           <i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4 pointer-events-none"></i> ${isAlreadyAdded ? 'Assistido' : 'Adicionar'}
-                       </button>`;
-                }
-
-                return `
-                    <div data-id="${movie.id}" class="movie-card group relative rounded-lg overflow-hidden shadow-lg transform transition-transform hover:-translate-y-1 cursor-pointer aspect-[2/3]">
-                        <img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 p-2 w-full">
-                            <h3 class="text-white text-sm font-bold truncate">${movie.title}</h3>
-                            <p class="text-gray-300 text-xs">${year}</p>
-                        </div>
-                        ${overlayContent}
-                    </div>`;
-            }
-
-            function updateAllButtonsForMovie(movieId, isAdded) {
-                const buttons = document.querySelectorAll(`.add-movie-btn[data-id='${movieId}']`);
-                buttons.forEach(button => {
-                    if(isAdded) {
-                        button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Assistido';
-                        button.disabled = true;
-                        button.classList.add('bg-gray-500/90', 'cursor-not-allowed', 'opacity-100');
-                        button.classList.remove('bg-emerald-600/90', 'hover:bg-emerald-700/90', 'opacity-0', 'group-hover:opacity-100');
-                    } else {
-                        button.innerHTML = '<i data-feather="plus" class="w-4 h-4"></i> Adicionar';
-                        button.disabled = false;
-                        button.classList.remove('bg-gray-500/90', 'cursor-not-allowed', 'opacity-100');
-                        button.classList.add('bg-emerald-600/90', 'hover:bg-emerald-700/90', 'opacity-0', 'group-hover:opacity-100');
-                    }
-                });
-                feather.replace();
-            }
-
-            function renderCarouselSkeleton(title) {
-                let skeletons = '';
-                for (let i = 0; i < 6; i++) { skeletons += `<div class="carousel-item"><div class="w-full aspect-[2/3] poster-loading rounded-lg"></div></div>`; }
-                return `<section class="mb-8"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div class="carousel">${skeletons}</div></section>`;
-            }
-             function renderGridSkeletons(count) {
-                let skeletons = '';
-                for (let i = 0; i < count; i++) { skeletons += `<div class="w-full aspect-[2/3] poster-loading rounded-lg"></div>`; }
-                return skeletons;
-            }
-            
-            async function renderStatsDashboard(silent = false) {
-                const statsContainer = app.views.stats;
-                if (watchedList.length === 0) {
-                    if (silent) return;
-                    statsContainer.innerHTML = `
-                        <div class="text-center py-16 text-gray-500">
-                            <i data-feather="bar-chart-2" class="w-16 h-16 mx-auto mb-4"></i>
-                            <p>Você ainda não adicionou filmes à sua lista.</p>
-                            <p class="text-sm">As estatísticas aparecerão aqui quando você adicionar filmes.</p>
-                        </div>
-                    `;
-                    feather.replace();
-                    return;
-                }
-                
-                if (!silent) {
-                    statsContainer.innerHTML = `<div class="text-center py-16"><i data-feather="loader" class="w-12 h-12 mx-auto animate-spin"></i><p class="mt-4">Calculando estatísticas...</p></div>`;
-                    feather.replace();
-                }
-
-                const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres);
-                if (moviesToUpdate.length > 0) {
-                    if (!silent) showToast("Atualizando dados dos filmes para as estatísticas...", "info");
-                    
-                    for (const movie of moviesToUpdate) {
-                        try {
-                           const movieData = await fetchTMDB(`movie/${movie.id}`);
-                           const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movie.docId);
-                           await setDoc(docRef, { runtime: movieData.runtime, genres: movieData.genres }, { merge: true });
-                        } catch(error) {
-                            console.error(`Falha ao atualizar dados para o filme ID: ${movie.id}`, error);
-                        }
-                    }
-                    if (!silent) showToast("Dados atualizados!", "success");
-                    return;
-                }
-                
-                if (silent) return;
-
-                const totalMoviesWatched = watchedList.length;
-                const totalMinutesWatched = watchedList.reduce((total, movie) => total + (parseInt(movie.runtime, 10) || 0), 0);
-                const formattedTotalTime = formatMinutesToHoursAndMinutes(totalMinutesWatched);
-
-                const statsCardsHtml = `
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                        <div class="bg-gray-800/50 p-6 rounded-lg text-center transform transition-transform hover:scale-105">
-                            <i data-feather="film" class="w-10 h-10 mx-auto text-emerald-400 mb-3"></i>
-                            <p class="text-4xl font-extrabold text-white">${totalMoviesWatched}</p>
-                            <p class="text-sm text-gray-400 font-medium uppercase tracking-wider mt-1">Filmes Assistidos</p>
-                        </div>
-                        <div class="bg-gray-800/50 p-6 rounded-lg text-center transform transition-transform hover:scale-105">
-                            <i data-feather="clock" class="w-10 h-10 mx-auto text-purple-400 mb-3"></i>
-                            <p class="text-4xl font-extrabold text-white">${formattedTotalTime}</p>
-                            <p class="text-sm text-gray-400 font-medium uppercase tracking-wider mt-1">Tempo Total</p>
-                        </div>
-                    </div>
-                `;
-
-                let genreMinutes = {};
-                watchedList.forEach(movie => {
-                    if (movie.runtime && movie.genres) {
-                        movie.genres.forEach(genre => {
-                            if (!genreMinutes[genre.name]) genreMinutes[genre.name] = 0;
-                            genreMinutes[genre.name] += (parseInt(movie.runtime, 10) || 0);
-                        });
-                    }
-                });
-                
-                let chartHtml = '<p class="text-center text-gray-400">Sem dados de gênero para exibir.</p>';
-                if (Object.keys(genreMinutes).length > 0) {
-                    const genreStats = Object.entries(genreMinutes).map(([name, minutes]) => ({ 
-                        name, 
-                        minutes,
-                        formattedTime: formatMinutesToHoursAndMinutes(minutes)
-                    }));
-                    genreStats.sort((a, b) => b.minutes - a.minutes);
-
-                    const maxMinutes = Math.max(...genreStats.map(g => g.minutes), 0);
-                    const colors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
-
-                    chartHtml = genreStats.map((genre, index) => {
-                        const barWidth = maxMinutes > 0 ? (genre.minutes / maxMinutes) * 100 : 0;
-                        const color = colors[index % colors.length];
-                        return `
-                            <div class="mb-4 animate-fade-in" style="animation-delay: ${index * 50}ms">
-                                <div class="flex justify-between items-center mb-1 text-sm font-medium">
-                                    <span class="text-gray-200">${genre.name}</span>
-                                    <span class="text-gray-400 font-semibold">${genre.formattedTime}</span>
-                                </div>
-                                <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
-                                    <div class="h-4 rounded-full transition-all duration-500" style="width: ${barWidth}%; background-color: ${color};"></div>
-                                </div>
-                            </div>`;
-                    }).join('');
-                }
-
-                statsContainer.innerHTML = statsCardsHtml + `
-                    <div class="bg-gray-800/50 p-6 rounded-lg shadow-lg mt-8">
-                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"><i data-feather="bar-chart-2"></i>Horas por Gênero</h2>
-                        <div>${chartHtml}</div>
-                    </div>`;
-                feather.replace();
-            }
-
-            async function handleCardClick(card) {
-                const movieId = card.dataset.id;
-                if(!movieId) return;
-                openModal();
-                app.modal.contentWrapper.innerHTML = `<div class="w-full h-full flex items-center justify-center p-8"><i data-feather="loader" class="w-10 h-10 text-emerald-400 animate-spin"></i></div>`;
-                feather.replace();
-                try {
-                    const movie = await fetchTMDB(`movie/${movieId}`);
-                    renderModalContent(movie);
-                } catch(error) {
-                    console.error(error);
-                    app.modal.contentWrapper.innerHTML = `<p class="text-center text-red-400 p-8">Erro ao carregar detalhes.</p>`;
-                }
-            }
-            
-            function openReviewModal(movie, existingReview = null) {
-                currentModalMovieData = movie;
-                openModal();
-                const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=Sem+Imagem';
-                
-                app.modal.contentWrapper.innerHTML = `
-                    <button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button>
-                    <div class="w-full md:w-1/3 flex-shrink-0 hidden md:block">
-                        <img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-6 flex-grow flex flex-col modal-content">
-                        <h2 class="text-2xl font-bold text-white">${movie.title}</h2>
-                        <p class="text-gray-400 text-sm mt-1 mb-4">Deixe sua avaliação:</p>
-                        
-                        <input type="hidden" id="movie-rating" value="${existingReview?.rating || 0}">
-                        <div id="star-rating-container" class="star-rating flex items-center justify-center my-4">
-                            <span data-value="1">★</span>
-                            <span data-value="2">★</span>
-                            <span data-value="3">★</span>
-                            <span data-value="4">★</span>
-                            <span data-value="5">★</span>
-                        </div>
-
-                        <textarea id="movie-review-text" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" rows="4" placeholder="Escreva sua resenha (opcional)...">${existingReview?.review || ''}</textarea>
-                        
-                        <button class="save-review-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}" data-title="${movie.title}">
-                            Salvar Avaliação
-                        </button>
-                    </div>`;
-                setupStarRating();
-                feather.replace();
-            }
-
-            function setupStarRating() {
-                const container = document.getElementById('star-rating-container');
-                const ratingInput = document.getElementById('movie-rating');
-                if (!container || !ratingInput) return;
-
-                const stars = container.querySelectorAll('span');
-                
-                function setRatingUI(value) {
-                    ratingInput.value = value;
-                    stars.forEach(star => {
-                        star.classList.toggle('rated', star.dataset.value <= value);
+        async function createProfileIfNotExists(user) {
+            const profileRef = doc(db, 'users', user.uid);
+            try {
+                const docSnap = await getDoc(profileRef);
+                if (!docSnap.exists()) {
+                    await setDoc(profileRef, {
+                        email: user.email,
+                        displayName: user.email.split('@')[0],
+                        bio: 'Bem-vindo(a) ao CineLog!',
+                        photoURL: `https://placehold.co/128x128/2c3440/e0e0e0?text=${user.email[0].toUpperCase()}`,
+                        createdAt: serverTimestamp()
                     });
                 }
+            } catch (error) {
+                console.error("Erro ao criar perfil:", error);
+            }
+        }
+        
+        function updateHeaderUI() {
+            if (!userProfile) return;
+            const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${userProfile.displayName[0].toUpperCase()}`;
+            app.auth.userDisplayName.textContent = userProfile.displayName;
+            app.auth.userEmail.textContent = userProfile.email;
+            app.auth.userAvatar.src = userProfile.photoURL || placeholderAvatar;
+            app.auth.userAvatar.onerror = () => { app.auth.userAvatar.src = placeholderAvatar; };
+        }
 
-                container.addEventListener('click', (event) => {
-                    const star = event.target.closest('span[data-value]');
-                    if (star) {
-                        const currentValue = parseInt(ratingInput.value, 10);
-                        const newValue = parseInt(star.dataset.value, 10);
-                        setRatingUI(currentValue === newValue ? 0 : newValue);
+        function setupRealtimeListener(userId) {
+            if (unsubscribeFromWatchedList) unsubscribeFromWatchedList();
+            const watchedMoviesRef = collection(db, 'users', userId, 'watchedMovies');
+            unsubscribeFromWatchedList = onSnapshot(query(watchedMoviesRef), (snapshot) => {
+                watchedList = snapshot.docs.map(doc => ({...doc.data(), docId: doc.id }));
+                renderWatchedList();
+                if (!app.views.stats.classList.contains('hidden')) renderStatsDashboard();
+            }, (error) => {
+                console.error("Erro ao carregar a lista de filmes:", error);
+                showToast("Erro ao carregar sua lista.", "error");
+            });
+        }
+
+        function initApp() {
+            if (!TMDB_API_KEY) showApiWarning();
+            setupAppEventListeners(); 
+            loadFeed();
+            feather.replace();
+        }
+
+        function showApiWarning() {
+            app.carouselsContainer.innerHTML = `<div class="col-span-full bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg text-center"><h3 class="font-bold text-lg">Atenção: Chave de API não configurada!</h3></div>`;
+        }
+
+        function setupAuthEventListeners() {
+            app.auth.loginForm.addEventListener('submit', handleLogin);
+            app.auth.registerForm.addEventListener('submit', handleRegister);
+            app.auth.showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); app.auth.loginForm.classList.add('hidden'); app.auth.registerForm.classList.remove('hidden'); });
+            app.auth.showLoginLink.addEventListener('click', (e) => { e.preventDefault(); app.auth.registerForm.classList.add('hidden'); app.auth.loginForm.classList.remove('hidden'); });
+        }
+
+        function setupAppEventListeners() {
+            Object.keys(app.nav).forEach(navKey => {
+                app.nav[navKey].addEventListener('click', () => switchView(navKey));
+            });
+            app.auth.userInfo.addEventListener('click', () => switchView('profile', currentUser.uid));
+            app.auth.logoutBtn.addEventListener('click', handleLogout);
+            app.search.form.addEventListener('submit', handleSearch);
+            app.recommendation.btn.addEventListener('click', handleRecommendationRequest);
+            app.friends.userSearchForm.addEventListener('submit', handleUserSearch);
+            
+            // Event Delegation for dynamic content
+            document.body.addEventListener('click', (event) => {
+                // Profile actions
+                const editProfileBtn = event.target.closest('#edit-profile-btn');
+                const cancelEditBtn = event.target.closest('#cancel-edit-profile-btn');
+                const viewProfileBtn = event.target.closest('.view-profile-btn');
+                const sendRequestBtn = event.target.closest('.send-friend-request-btn');
+                const acceptRequestBtn = event.target.closest('.accept-friend-request-btn');
+                const rejectRequestBtn = event.target.closest('.reject-friend-request-btn');
+
+                if (editProfileBtn) { document.getElementById('display-profile').classList.add('hidden'); document.getElementById('edit-profile-form').classList.remove('hidden'); }
+                if (cancelEditBtn) { document.getElementById('edit-profile-form').classList.add('hidden'); document.getElementById('display-profile').classList.remove('hidden'); }
+                if (viewProfileBtn) switchView('profile', viewProfileBtn.dataset.uid);
+                if (sendRequestBtn) sendFriendRequest(sendRequestBtn.dataset);
+                if (acceptRequestBtn) acceptFriendRequest(acceptRequestBtn.dataset.uid);
+                if (rejectRequestBtn) rejectFriendRequest(rejectRequestBtn.dataset.uid);
+                
+                // Movie actions
+                const addBtn = event.target.closest('.add-movie-btn');
+                const removeBtn = event.target.closest('.remove-movie-btn');
+                const card = event.target.closest('.movie-card');
+                const scrollBtn = event.target.closest('.scroll-btn');
+                if (addBtn) { event.stopPropagation(); handleAddMovieClick(addBtn); } 
+                else if (removeBtn) { event.stopPropagation(); handleRemoveMovie(removeBtn); } 
+                else if (scrollBtn) { event.stopPropagation(); handleCarouselScroll(scrollBtn); }
+                else if (card) { handleCardClick(card); }
+
+                // Modal actions
+                const closeBtn = event.target.closest('.modal-close-btn');
+                const saveReviewBtn = event.target.closest('.save-review-btn');
+                const editReviewBtn = event.target.closest('.edit-review-btn');
+                if (event.target === app.modal.overlay || closeBtn) closeModal();
+                if (saveReviewBtn) handleSaveReview(saveReviewBtn);
+                if (editReviewBtn) handleEditReviewClick(editReviewBtn);
+            });
+
+            document.body.addEventListener('submit', (event) => {
+                 if (event.target.id === 'edit-profile-form') handleProfileUpdate(event);
+            });
+        }
+        
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            const form = e.target;
+            const newDisplayName = form.querySelector('#profile-edit-name').value.trim();
+            const newBio = form.querySelector('#profile-edit-bio').value.trim();
+            const newPhotoURL = form.querySelector('#profile-edit-photo').value.trim();
+
+            if (!newDisplayName) { showToast("O nome de perfil não pode ficar em branco.", "error"); return; }
+
+            const profileRef = doc(db, 'users', currentUser.uid);
+            try {
+                await setDoc(profileRef, { displayName: newDisplayName, bio: newBio, photoURL: newPhotoURL }, { merge: true });
+                showToast("Perfil atualizado com sucesso!", "success");
+                form.classList.add('hidden');
+                form.previousElementSibling.classList.remove('hidden');
+            } catch (error) {
+                console.error("Erro ao atualizar perfil:", error);
+                showToast("Não foi possível atualizar o perfil.", "error");
+            }
+        }
+
+        async function handleLogin(e) { e.preventDefault(); const email = app.auth.loginForm.querySelector('#login-email').value; const password = app.auth.loginForm.querySelector('#login-password').value; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { console.error("Erro no login:", error.code); let message = 'Ocorreu um erro.'; if (error.code === 'auth/invalid-credential') { message = 'E-mail ou senha incorretos.'; } showToast(message, 'error'); } }
+        async function handleRegister(e) { e.preventDefault(); const email = app.auth.registerForm.querySelector('#register-email').value; const password = app.auth.registerForm.querySelector('#register-password').value; try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await createProfileIfNotExists(userCredential.user); } catch (error) { console.error("Erro no cadastro:", error.code); let message = 'Ocorreu um erro.'; if (error.code === 'auth/email-already-in-use') { message = 'Este e-mail já está cadastrado.'; } else if (error.code === 'auth/weak-password') { message = 'A senha precisa ter pelo menos 6 caracteres.'; } showToast(message, 'error'); } }
+        async function handleLogout() { try { await signOut(auth); } catch (error) { console.error("Erro no logout:", error); showToast(`Erro: ${error.message}`, 'error'); } }
+
+        async function switchView(viewName, dataId = null) {
+            currentlyViewingProfileId = (viewName === 'profile') ? (dataId || currentUser.uid) : null;
+
+            Object.values(app.views).forEach(view => view.classList.add('hidden'));
+            Object.values(app.nav).forEach(button => { button.classList.remove('bg-emerald-500', 'text-white'); button.classList.add('text-gray-300'); });
+
+            app.views[viewName].classList.remove('hidden');
+            app.nav[viewName].classList.add('bg-emerald-500', 'text-white');
+            app.nav[viewName].classList.remove('text-gray-300');
+
+            if (viewName === 'stats') renderStatsDashboard();
+            else if (viewName === 'feed') { app.search.input.value = ''; loadFeed(); }
+            else if (viewName === 'profile') renderProfileView(currentlyViewingProfileId);
+            else if (viewName === 'friends') renderFriendsView();
+        }
+        
+        // ... (resto do código, como fetchTMDB, loadFeed, handleSearch, etc., permanece o mesmo)
+        async function fetchTMDB(endpoint) { const separator = endpoint.includes('?') ? '&' : '?'; const url = `https://api.themoviedb.org/3/${endpoint}${separator}api_key=${TMDB_API_KEY}&language=pt-BR`; const response = await fetch(url); if (!response.ok) throw new Error(`Falha ao buscar dados: ${endpoint}`); return response.json(); }
+        async function loadFeed() { app.recommendation.container.innerHTML = ''; lastRecommendationId = null; const currentYear = new Date().getFullYear(); app.carouselsContainer.innerHTML = renderCarouselSkeleton('Destaques do Dia') + renderCarouselSkeleton('Destaques da Semana') + renderCarouselSkeleton('Lançamentos') + renderCarouselSkeleton(`Melhores de ${currentYear}`); feather.replace(); try { const [trendingDay, trendingWeek, releases, bestOfYear] = await Promise.all([ fetchTMDB('trending/movie/day'), fetchTMDB('trending/movie/week'), fetchTMDB('movie/now_playing?region=BR'), fetchTMDB(`discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=${currentYear}`) ]); app.carouselsContainer.innerHTML = renderCarousel(trendingDay.results, 'Destaques do Dia', 'trending-day-carousel') + renderCarousel(trendingWeek.results, 'Destaques da Semana', 'trending-week-carousel') + renderCarousel(releases.results, 'Em Cartaz', 'releases-carousel') + renderCarousel(bestOfYear.results, `Melhores de ${currentYear}`, 'best-of-year-carousel'); feather.replace(); } catch (error) { console.error("Erro ao carregar o feed:", error); app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Não foi possível carregar o feed.</p>`; } }
+        async function handleSearch(event) { event.preventDefault(); const query = app.search.input.value.trim(); app.recommendation.container.innerHTML = ''; if (!query) { loadFeed(); return; } app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${renderGridSkeletons(10)}</div>`; try { const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(query)}`); if (data.results.length === 0) { app.carouselsContainer.innerHTML = `<p class="text-center text-gray-400">Nenhum filme encontrado para "${query}".</p>`; return; } const movieCards = data.results.filter(m => m.poster_path).map(movie => createMovieCard(movie, false)).join(''); app.carouselsContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${movieCards}</div>`; feather.replace(); } catch (error) { console.error("Erro na busca:", error); app.carouselsContainer.innerHTML = `<p class="text-center text-red-400">Erro ao buscar.</p>`; } }
+        async function handleRecommendationRequest() { const btn = app.recommendation.btn; btn.disabled = true; btn.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin"></i>Analisando...'; feather.replace(); try { const favoriteMovies = watchedList.filter(movie => movie.rating >= 4); if (favoriteMovies.length < 3) { showToast("Avalie pelo menos 3 filmes com 4+ estrelas.", "warning"); return; } const watchedIds = new Set(watchedList.map(m => m.id)); const seedMovie = favoriteMovies[Math.floor(Math.random() * favoriteMovies.length)]; const data = await fetchTMDB(`movie/${seedMovie.id}/recommendations`); let potentialMovies = data.results.filter(movie => !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path); let recommendedMovie = potentialMovies.length > 0 ? potentialMovies[Math.floor(Math.random() * potentialMovies.length)] : null; if (!recommendedMovie) { showToast("Buscando de forma mais ampla...", "info"); if (!seedMovie.genres) { await renderStatsDashboard(true); const updatedSeedMovie = watchedList.find(m => m.id === seedMovie.id); if (!updatedSeedMovie || !updatedSeedMovie.genres) { showToast("Gênero do filme favorito não encontrado.", "warning"); return; } seedMovie.genres = updatedSeedMovie.genres; } const genreQuery = seedMovie.genres.map(g => g.id).join('|'); const fallbackData = await fetchTMDB(`discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&vote_count.gte=100`); potentialMovies = fallbackData.results.filter(movie => !watchedIds.has(movie.id) && movie.id !== lastRecommendationId && movie.poster_path); if (potentialMovies.length > 0) recommendedMovie = potentialMovies[Math.floor(Math.random() * potentialMovies.length)]; } if (recommendedMovie) { lastRecommendationId = recommendedMovie.id; renderRecommendation(recommendedMovie, seedMovie); } else { showToast("Nenhuma nova recomendação encontrada.", "info"); lastRecommendationId = null; } } catch (error) { console.error("Erro na recomendação:", error); showToast("Erro ao buscar recomendação.", "error"); } finally { btn.disabled = false; btn.innerHTML = '<i data-feather="star" class="w-5 h-5"></i> Me recomende um filme'; feather.replace(); } }
+        function renderRecommendation(movie, seedMovie) { const container = app.recommendation.container; const movieCardHTML = createMovieCard(movie, false); container.innerHTML = `<section class="mb-8 animate-fade-in"><h2 class="text-2xl font-bold text-white mb-2">Recomendado para Você</h2><p class="text-purple-300 text-sm mb-4">Porque você gostou de <span class="font-bold">${seedMovie.title}</span>...</p><div class="max-w-xs">${movieCardHTML}</div></section>`; container.scrollIntoView({ behavior: 'smooth', block: 'center' }); feather.replace(); }
+        async function handleAddMovieClick(button) { const movieId = parseInt(button.dataset.id, 10); const movieData = await fetchTMDB(`movie/${movieId}`); openReviewModal(movieData); }
+        async function handleSaveReview(button) { if (!currentUser) { showToast("Você precisa estar logado.", "error"); return; } button.disabled = true; button.innerHTML = '<i data-feather="loader" class="w-5 h-5 animate-spin mx-auto"></i>'; feather.replace(); try { const movieId = parseInt(button.dataset.id, 10); const rating = parseInt(document.getElementById('movie-rating').value, 10); const reviewText = document.getElementById('movie-review-text').value.trim(); const movieInList = watchedList.find(m => m.id === movieId); if (!currentModalMovieData || currentModalMovieData.id !== movieId) throw new Error("Dados do modal inconsistentes."); const movieToStore = { id: currentModalMovieData.id, title: currentModalMovieData.title, poster_path: currentModalMovieData.poster_path, release_date: currentModalMovieData.release_date, rating, review: reviewText, runtime: currentModalMovieData.runtime, genres: currentModalMovieData.genres, addedAt: serverTimestamp() }; let toastMessage = ""; if (movieInList && movieInList.docId) { const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieInList.docId); await setDoc(docRef, movieToStore, { merge: true }); toastMessage = "Avaliação atualizada!"; } else { const collectionRef = collection(db, 'users', currentUser.uid, 'watchedMovies'); await addDoc(collectionRef, movieToStore); toastMessage = `"${movieToStore.title}" adicionado!`; } closeModal(() => showToast(toastMessage, 'success')); } catch (error) { console.error("Erro ao salvar no Firestore:", error); showToast("Erro ao salvar.", 'error'); button.disabled = false; button.innerHTML = 'Salvar Avaliação'; feather.replace(); } }
+        async function handleRemoveMovie(button) { if (!currentUser) return; const movieId = parseInt(button.dataset.id, 10); const movieToRemove = watchedList.find(m => m.id === movieId); if (!movieToRemove || !movieToRemove.docId) return; try { const docRef = doc(db, 'users', currentUser.uid, 'watchedMovies', movieToRemove.docId); await deleteDoc(docRef); showToast(`"${movieToRemove.title}" removido.`, 'info'); } catch (error) { console.error("Erro ao remover:", error); showToast("Erro ao remover.", 'error'); } }
+        async function handleEditReviewClick(button) { const movieId = parseInt(button.dataset.id, 10); const movieInList = watchedList.find(m => m.id === movieId); const movieData = await fetchTMDB(`movie/${movieId}`); openReviewModal(movieData, movieInList); }
+        function handleCarouselScroll(button) { const direction = parseInt(button.dataset.direction, 10); const carousel = document.getElementById(button.dataset.carouselId); if (carousel) carousel.scrollLeft += carousel.clientWidth * 0.8 * direction; }
+        function renderCarousel(movies, title, id) { if (!movies || movies.length === 0) return ''; const movieCards = movies.filter(m => m.poster_path).map(movie => `<div class="carousel-item">${createMovieCard(movie, false)}</div>`).join(''); return `<section class="mb-8 carousel-container relative"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div id="${id}" class="carousel">${movieCards}</div><button class="scroll-btn left-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="-1" data-carousel-id="${id}"><i data-feather="chevron-left" class="w-6 h-6 pointer-events-none"></i></button><button class="scroll-btn right-2 hidden md:block bg-black/40 hover:bg-black/70 text-white p-2 rounded-full absolute top-1/2 -translate-y-1/2 transition-opacity opacity-0 z-10" data-direction="1" data-carousel-id="${id}"><i data-feather="chevron-right" class="w-6 h-6 pointer-events-none"></i></button></section>`; }
+        function renderWatchedList() { if (watchedList.length === 0) { app.list.placeholder.classList.remove('hidden'); app.list.container.innerHTML = ''; } else { app.list.placeholder.classList.add('hidden'); const sortedList = [...watchedList].sort((a, b) => (b.addedAt?.seconds || 0) - (a.addedAt?.seconds || 0)); app.list.container.innerHTML = sortedList.map(movie => createMovieCard(movie, true)).join(''); } document.querySelectorAll('.add-movie-btn').forEach(btn => updateAllButtonsForMovie(parseInt(btn.dataset.id, 10), watchedList.some(m => m.id === parseInt(btn.dataset.id, 10)))); feather.replace(); }
+        function createMovieCard(movie, isWatched = false) { const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A'; const isAlreadyAdded = watchedList.some(m => m.id === movie.id); let overlayContent = ''; if (isWatched) { const watchedMovie = watchedList.find(m => m.id === movie.id); const ratingHTML = watchedMovie?.rating > 0 ? `<div class="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 font-bold"><i data-feather="star" class="w-3 h-3 fill-current"></i>${watchedMovie.rating.toFixed(0)}</div>` : ''; overlayContent = `${ratingHTML}<button data-id="${movie.id}" class="remove-movie-btn absolute top-2 right-2 bg-red-600/80 hover:bg-red-700/80 p-2 rounded-full backdrop-blur-sm transition-transform hover:scale-110 z-10"><i data-feather="trash-2" class="w-4 h-4 text-white pointer-events-none"></i></button>`; } else { overlayContent = `<button data-id="${movie.id}" class="add-movie-btn absolute bottom-0 left-0 right-0 text-white text-xs font-bold py-2 text-center flex items-center justify-center gap-1 z-10 ${isAlreadyAdded ? 'bg-gray-500/90 cursor-not-allowed' : 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100 transition-opacity'}" ${isAlreadyAdded ? 'disabled' : ''}><i data-feather="${isAlreadyAdded ? 'check' : 'plus'}" class="w-4 h-4"></i> ${isAlreadyAdded ? 'Assistido' : 'Adicionar'}</button>`; } return `<div data-id="${movie.id}" class="movie-card group relative rounded-lg overflow-hidden shadow-lg transform transition-transform hover:-translate-y-1 cursor-pointer aspect-[2/3]"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/500x750/2c3440/e0e0e0?text=Imagem'"><div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div><div class="absolute bottom-0 left-0 p-2 w-full"><h3 class="text-white text-sm font-bold truncate">${movie.title}</h3><p class="text-gray-300 text-xs">${year}</p></div>${overlayContent}</div>`; }
+        function updateAllButtonsForMovie(movieId, isAdded) { document.querySelectorAll(`.add-movie-btn[data-id='${movieId}']`).forEach(button => { if (isAdded) { button.innerHTML = '<i data-feather="check" class="w-4 h-4"></i> Assistido'; button.disabled = true; button.className = button.className.replace(/bg-emerald-600\/90 hover:bg-emerald-700\/90 opacity-0 group-hover:opacity-100/g, 'bg-gray-500/90 cursor-not-allowed opacity-100'); } else { button.innerHTML = '<i data-feather="plus" class="w-4 h-4"></i> Adicionar'; button.disabled = false; button.className = button.className.replace(/bg-gray-500\/90 cursor-not-allowed opacity-100/g, 'bg-emerald-600/90 hover:bg-emerald-700/90 opacity-0 group-hover:opacity-100'); } }); feather.replace(); }
+        function renderCarouselSkeleton(title) { let skeletons = Array(6).fill('<div class="carousel-item"><div class="w-full aspect-[2/3] poster-loading rounded-lg"></div></div>').join(''); return `<section class="mb-8"><h2 class="text-2xl font-bold text-white mb-4">${title}</h2><div class="carousel">${skeletons}</div></section>`; }
+        function renderGridSkeletons(count) { return Array(count).fill('<div class="w-full aspect-[2/3] poster-loading rounded-lg"></div>').join(''); }
+        async function renderStatsDashboard(silent = false) { const statsContainer = app.views.stats; if (watchedList.length === 0) { if (!silent) statsContainer.innerHTML = `<div class="text-center py-16 text-gray-500"><i data-feather="bar-chart-2" class="w-16 h-16 mx-auto mb-4"></i><p>Sua lista está vazia.</p></div>`; feather.replace(); return; } if (!silent) { statsContainer.innerHTML = `<div class="text-center py-16"><i data-feather="loader" class="w-12 h-12 mx-auto animate-spin"></i><p class="mt-4">Calculando...</p></div>`; feather.replace(); } const moviesToUpdate = watchedList.filter(movie => !movie.runtime || !movie.genres); if (moviesToUpdate.length > 0) { if (!silent) showToast("Atualizando dados dos filmes...", "info"); for (const movie of moviesToUpdate) { try { const movieData = await fetchTMDB(`movie/${movie.id}`); await setDoc(doc(db, 'users', currentUser.uid, 'watchedMovies', movie.docId), { runtime: movieData.runtime, genres: movieData.genres }, { merge: true }); } catch (error) { console.error(`Falha ao atualizar filme ID: ${movie.id}`, error); } } if (!silent) showToast("Dados atualizados!", "success"); return; } if (silent) return; const totalMovies = watchedList.length; const totalMinutes = watchedList.reduce((t, m) => t + (m.runtime || 0), 0); const time = formatMinutesToHoursAndMinutes(totalMinutes); const cardsHtml = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"><div class="bg-gray-800/50 p-6 rounded-lg text-center"><i data-feather="film" class="w-10 h-10 mx-auto text-emerald-400 mb-3"></i><p class="text-4xl font-extrabold text-white">${totalMovies}</p><p class="text-sm text-gray-400 uppercase tracking-wider mt-1">Filmes Assistidos</p></div><div class="bg-gray-800/50 p-6 rounded-lg text-center"><i data-feather="clock" class="w-10 h-10 mx-auto text-purple-400 mb-3"></i><p class="text-4xl font-extrabold text-white">${time}</p><p class="text-sm text-gray-400 uppercase tracking-wider mt-1">Tempo Total</p></div></div>`; let genreMinutes = {}; watchedList.forEach(m => m.genres?.forEach(g => genreMinutes[g.name] = (genreMinutes[g.name] || 0) + (m.runtime || 0))); let chartHtml = '<p class="text-center text-gray-400">Sem dados de gênero.</p>'; if (Object.keys(genreMinutes).length > 0) { const genreStats = Object.entries(genreMinutes).map(([n, m]) => ({ name: n, minutes: m })).sort((a, b) => b.minutes - a.minutes); const maxMins = Math.max(...genreStats.map(g => g.minutes), 0); const colors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899']; chartHtml = genreStats.map((g, i) => `<div class="mb-4"><div class="flex justify-between items-center mb-1 text-sm"><span class="text-gray-200">${g.name}</span><span class="text-gray-400">${formatMinutesToHoursAndMinutes(g.minutes)}</span></div><div class="w-full bg-gray-700 rounded-full h-4"><div class="h-4 rounded-full" style="width: ${maxMins > 0 ? (g.minutes / maxMins) * 100 : 0}%; background-color: ${colors[i % colors.length]};"></div></div></div>`).join(''); } statsContainer.innerHTML = cardsHtml + `<div class="bg-gray-800/50 p-6 rounded-lg mt-8"><h2 class="text-2xl font-bold text-white mb-6">Horas por Gênero</h2><div>${chartHtml}</div></div>`; feather.replace(); }
+        async function handleCardClick(card) { const movieId = card.dataset.id; if (!movieId) return; openModal(); app.modal.contentWrapper.innerHTML = `<div class="w-full h-full flex items-center justify-center p-8"><i data-feather="loader" class="w-10 h-10 text-emerald-400 animate-spin"></i></div>`; feather.replace(); try { const movie = await fetchTMDB(`movie/${movieId}`); renderModalContent(movie); } catch (error) { console.error(error); app.modal.contentWrapper.innerHTML = `<p class="text-center text-red-400 p-8">Erro ao carregar detalhes.</p>`; } }
+        function openReviewModal(movie, existingReview = null) { currentModalMovieData = movie; openModal(); const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=N/A'; app.modal.contentWrapper.innerHTML = `<button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button><div class="w-full md:w-1/3 flex-shrink-0 hidden md:block"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div><div class="p-6 flex-grow flex flex-col modal-content"><h2 class="text-2xl font-bold text-white">${movie.title}</h2><p class="text-gray-400 text-sm mt-1 mb-4">Deixe sua avaliação:</p><input type="hidden" id="movie-rating" value="${existingReview?.rating || 0}"><div id="star-rating-container" class="star-rating flex items-center justify-center my-4">${[1,2,3,4,5].map(v => `<span data-value="${v}">★</span>`).join('')}</div><textarea id="movie-review-text" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg p-3 text-white" rows="4" placeholder="Sua resenha (opcional)...">${existingReview?.review || ''}</textarea><button class="save-review-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg mt-6" data-id="${movie.id}">Salvar Avaliação</button></div>`; setupStarRating(); feather.replace(); }
+        function setupStarRating() { const container = document.getElementById('star-rating-container'); const ratingInput = document.getElementById('movie-rating'); if (!container || !ratingInput) return; const stars = container.querySelectorAll('span'); const setRatingUI = (value) => { ratingInput.value = value; stars.forEach(star => star.classList.toggle('rated', star.dataset.value <= value)); }; container.addEventListener('click', (e) => { const star = e.target.closest('span[data-value]'); if (star) { const current = parseInt(ratingInput.value, 10); const newValue = parseInt(star.dataset.value, 10); setRatingUI(current === newValue ? 0 : newValue); } }); setRatingUI(parseInt(ratingInput.value, 10)); }
+        function showToast(message, type = 'info') { app.toast.message.textContent = message; app.toast.element.className = app.toast.element.className.replace(/border-\w+-500/g, ''); const typeMap = { success: 'emerald', warning: 'yellow', error: 'red', info: 'blue' }; app.toast.element.classList.add(`border-${typeMap[type]}-500`); app.toast.element.classList.remove('opacity-0', 'translate-y-10'); setTimeout(() => app.toast.element.classList.add('opacity-0', 'translate-y-10'), 4000); }
+        function openModal() { document.body.style.overflow = 'hidden'; app.modal.overlay.classList.remove('hidden'); setTimeout(() => { app.modal.overlay.classList.add('opacity-100'); app.modal.contentWrapper.classList.add('scale-100'); }, 10); }
+        function closeModal(callback) { document.body.style.overflow = ''; app.modal.overlay.classList.remove('opacity-100'); app.modal.contentWrapper.classList.remove('scale-100'); setTimeout(() => { app.modal.overlay.classList.add('hidden'); app.modal.contentWrapper.innerHTML = ''; if (callback) callback(); }, 300); }
+        function formatRuntime(minutes) { return minutes ? formatMinutesToHoursAndMinutes(minutes) : 'N/A'; }
+        function formatMinutesToHoursAndMinutes(totalMinutes) { if (!totalMinutes || totalMinutes <= 0) return '0m'; const h = Math.floor(totalMinutes / 60); const m = Math.round(totalMinutes % 60); return `${h > 0 ? h + 'h ' : ''}${m > 0 ? m + 'm' : ''}`.trim() || '0m'; }
+        function renderModalContent(movie) { const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=N/A'; const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A'; const runtime = formatRuntime(movie.runtime); const watchedMovie = watchedList.find(m => m.id === movie.id); let reviewSection = `<button class="add-movie-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg mt-6" data-id="${movie.id}">Adicionar à Minha Lista</button>`; if (watchedMovie) { let ratingHTML = ''; if (watchedMovie.rating > 0) { ratingHTML = `<div class="flex items-center text-3xl mb-2 text-amber-400">${Array.from({length: 5}, (_, i) => `<span>${i < watchedMovie.rating ? '★' : '<span class="text-gray-600">★</span>'}</span>`).join('')}</div>`; } reviewSection = `<div class="mt-4 pt-4 border-t border-gray-700"><h3 class="text-lg font-semibold text-white mb-2">Sua Avaliação</h3>${ratingHTML}${watchedMovie.review ? `<p class="text-gray-300 text-sm bg-gray-700/50 p-3 rounded-md"><em>"${watchedMovie.review}"</em></p>` : '<p class="text-gray-400 text-sm italic">Sem resenha.</p>'}<button class="edit-review-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg mt-6" data-id="${movie.id}">Editar Avaliação</button></div>`; } app.modal.contentWrapper.innerHTML = `<button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button><div class="w-full md:w-1/3 flex-shrink-0"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div><div class="p-6 flex-grow flex flex-col modal-content"><h2 class="text-3xl font-bold text-white">${movie.title}</h2><div class="flex items-center gap-4 text-gray-400 text-sm mt-2 mb-4"><span>${year}</span><span>${runtime}</span></div><div class="flex flex-wrap gap-2 mb-4">${movie.genres.map(g => `<span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">${g.name}</span>`).join('')}</div><h3 class="text-lg font-semibold text-white mt-2 mb-2">Sinopse</h3><p class="text-gray-300 text-sm flex-grow">${movie.overview || 'Sinopse não disponível.'}</p>${reviewSection}</div>`; feather.replace(); }
+        
+        // --- Novas Funções de Amizade ---
+        
+        async function handleUserSearch(e) {
+            e.preventDefault();
+            const searchTerm = app.friends.userSearchInput.value.trim();
+            if (searchTerm.length < 3) {
+                showToast("Digite pelo menos 3 caracteres para buscar.", "warning");
+                return;
+            }
+            app.friends.userSearchResults.innerHTML = `<div class="text-center"><i data-feather="loader" class="animate-spin mx-auto"></i></div>`;
+            feather.replace();
+
+            try {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("displayName", ">=", searchTerm), where("displayName", "<=", searchTerm + '\uf8ff'));
+                const querySnapshot = await getDocs(q);
+                
+                const results = [];
+                querySnapshot.forEach(doc => {
+                    if (doc.id !== currentUser.uid) { // Não mostrar a si mesmo
+                        results.push({ uid: doc.id, ...doc.data() });
                     }
                 });
-                
-                setRatingUI(parseInt(ratingInput.value, 10));
-            }
 
-            function showToast(message, type = 'info') {
-                app.toast.message.textContent = message;
-                app.toast.element.classList.remove('border-emerald-500', 'border-yellow-500', 'border-blue-500', 'border-red-500');
-                if (type === 'success') app.toast.element.classList.add('border-emerald-500');
-                else if (type === 'warning') app.toast.element.classList.add('border-yellow-500');
-                else if (type === 'error') app.toast.element.classList.add('border-red-500');
-                else app.toast.element.classList.add('border-blue-500');
-                app.toast.element.classList.remove('opacity-0', 'translate-y-10');
-                setTimeout(() => { app.toast.element.classList.add('opacity-0', 'translate-y-10'); }, 4000);
-            }
-            function openModal() {
-                document.body.style.overflow = 'hidden';
-                app.modal.overlay.classList.remove('hidden');
-                setTimeout(() => {
-                    app.modal.overlay.classList.add('opacity-100');
-                    app.modal.contentWrapper.classList.add('scale-100');
-                }, 10);
-            }
-            function closeModal(callback) {
-                document.body.style.overflow = '';
-                app.modal.overlay.classList.remove('opacity-100');
-                app.modal.contentWrapper.classList.remove('scale-100');
-                setTimeout(() => {
-                    app.modal.overlay.classList.add('hidden');
-                    app.modal.contentWrapper.innerHTML = '';
-                    if (callback) callback();
-                }, 300);
-            }
-            function formatRuntime(minutes) {
-                if (!minutes) return 'N/A';
-                return formatMinutesToHoursAndMinutes(minutes);
-            }
-            function formatMinutesToHoursAndMinutes(totalMinutes) {
-                if (!totalMinutes || totalMinutes <= 0) return '0m';
-                const hours = Math.floor(totalMinutes / 60);
-                const minutes = Math.round(totalMinutes % 60);
-                let result = '';
-                if (hours > 0) result += `${hours}h `;
-                if (minutes > 0) result += `${minutes}m`;
-                return result.trim() || '0m';
-            }
-            function renderModalContent(movie) {
-                const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/2c3440/e0e0e0?text=Sem+Imagem';
-                const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
-                const runtime = formatRuntime(movie.runtime);
-                const watchedMovie = watchedList.find(m => m.id === movie.id);
-                
-                let reviewSection = `<button class="add-movie-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}">Adicionar à Minha Lista</button>`;
-                
-                if (watchedMovie) {
-                    let ratingHTML = '';
-                    if (watchedMovie.rating > 0) {
-                        ratingHTML = `<div class="flex items-center text-3xl mb-2 text-amber-400">`;
-                        for (let i = 1; i <= 5; i++) {
-                            ratingHTML += `<span>${i <= watchedMovie.rating ? '★' : '<span class="text-gray-600">★</span>'}</span>`;
-                        }
-                        ratingHTML += `</div>`;
-                    }
-
-                    reviewSection = `
-                        <div class="mt-4 pt-4 border-t border-gray-700">
-                             <h3 class="text-lg font-semibold text-white mb-2">Sua Avaliação</h3>
-                             ${ratingHTML}
-                             ${watchedMovie.review ? `<p class="text-gray-300 text-sm bg-gray-700/50 p-3 rounded-md"><em>"${watchedMovie.review}"</em></p>` : '<p class="text-gray-400 text-sm italic">Você não escreveu uma resenha.</p>'}
-                             <button class="edit-review-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-lg transition-colors mt-6" data-id="${movie.id}">Editar Avaliação</button>
-                        </div>
-                    `;
+                if (results.length === 0) {
+                    app.friends.userSearchResults.innerHTML = `<p class="text-center text-gray-400">Nenhum usuário encontrado.</p>`;
+                    return;
                 }
 
-                app.modal.contentWrapper.innerHTML = `
-                    <button class="modal-close-btn absolute top-3 right-3 text-gray-400 hover:text-white z-20"><i data-feather="x" class="w-6 h-6"></i></button>
-                    <div class="w-full md:w-1/3 flex-shrink-0"><img src="${posterUrl}" alt="${movie.title}" class="w-full h-full object-cover"></div>
-                    <div class="p-6 flex-grow flex flex-col modal-content">
-                        <h2 class="text-3xl font-bold text-white">${movie.title}</h2>
-                        <div class="flex items-center gap-4 text-gray-400 text-sm mt-2 mb-4"><span>${year}</span><span>${runtime}</span></div>
-                        <div class="flex flex-wrap gap-2 mb-4">${movie.genres.map(g => `<span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">${g.name}</span>`).join('')}</div>
-                        <h3 class="text-lg font-semibold text-white mt-2 mb-2">Sinopse</h3>
-                        <p class="text-gray-300 text-sm flex-grow">${movie.overview || 'Sinopse não disponível.'}</p>
-                        ${reviewSection}
-                    </div>`;
-                
-                feather.replace();
-            }
+                const resultsHtml = results.map(user => {
+                    const friendship = friendships.find(f => f.id === user.uid);
+                    let buttonHtml = `<button class="send-friend-request-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1" data-uid="${user.uid}" data-name="${user.displayName}" data-photo="${user.photoURL || ''}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar</button>`;
+                    
+                    if (friendship) {
+                        if (friendship.status === 'accepted') buttonHtml = `<span class="text-xs font-bold text-emerald-400 flex items-center gap-1"><i data-feather="check" class="w-4 h-4"></i> Amigos</span>`;
+                        else if (friendship.status === 'pending_sent') buttonHtml = `<span class="text-xs font-bold text-gray-400">Enviado</span>`;
+                        else if (friendship.status === 'pending_received') buttonHtml = `<span class="text-xs font-bold text-yellow-400">Pendente</span>`;
+                    }
 
-            // Inicia tudo
-            initAuth();
+                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${user.displayName[0].toUpperCase()}`;
+                    return `
+                        <div class="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <img src="${user.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-bold text-white">${user.displayName}</p>
+                                    <p class="text-xs text-gray-400">${user.email}</p>
+                                </div>
+                            </div>
+                            <div>${buttonHtml}</div>
+                        </div>
+                    `;
+                }).join('<div class="my-2"></div>');
+                
+                app.friends.userSearchResults.innerHTML = `<h3 class="font-bold mb-2">Resultados da Busca:</h3>${resultsHtml}`;
+                feather.replace();
+
+            } catch (error) {
+                console.error("Erro ao buscar usuários:", error);
+                showToast("Erro ao buscar usuários.", "error");
+                app.friends.userSearchResults.innerHTML = `<p class="text-center text-red-400">Ocorreu um erro na busca.</p>`;
+            }
+        }
+
+        function renderFriendsView() {
+            const requests = friendships.filter(f => f.status === 'pending_received');
+            const friends = friendships.filter(f => f.status === 'accepted');
+
+            // Renderiza Pedidos
+            if (requests.length > 0) {
+                app.friends.requestsContainer.innerHTML = requests.map(req => {
+                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${req.displayName[0].toUpperCase()}`;
+                    return `
+                    <div class="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                            <img src="${req.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
+                            <p class="font-bold text-white">${req.displayName}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 p-2 rounded-full" data-uid="${req.id}" title="Aceitar"><i data-feather="check" class="w-4 h-4 text-white"></i></button>
+                            <button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 p-2 rounded-full" data-uid="${req.id}" title="Recusar"><i data-feather="x" class="w-4 h-4 text-white"></i></button>
+                        </div>
+                    </div>`;
+                }).join('');
+            } else {
+                app.friends.requestsContainer.innerHTML = `<p class="text-sm text-gray-500 text-center">Nenhum pedido pendente.</p>`;
+            }
+            
+            // Renderiza Amigos
+            if (friends.length > 0) {
+                 app.friends.listContainer.innerHTML = friends.map(friend => {
+                    const placeholderAvatar = `https://placehold.co/40x40/2c3440/e0e0e0?text=${friend.displayName[0].toUpperCase()}`;
+                    return `
+                    <div class="bg-gray-700/50 p-3 rounded-lg flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                            <img src="${friend.photoURL || placeholderAvatar}" class="w-10 h-10 rounded-full object-cover">
+                            <p class="font-bold text-white">${friend.displayName}</p>
+                        </div>
+                        <button class="view-profile-btn bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-full" data-uid="${friend.id}">Ver Perfil</button>
+                    </div>`;
+                }).join('');
+            } else {
+                app.friends.listContainer.innerHTML = `<p class="text-sm text-gray-500 text-center">Você ainda não tem amigos. Busque e adicione alguns!</p>`;
+            }
+            feather.replace();
+        }
+
+        async function sendFriendRequest({uid, name, photo}) {
+            const batch = writeBatch(db);
+            // Doc para o remetente
+            const senderRef = doc(db, 'users', currentUser.uid, 'friends', uid);
+            batch.set(senderRef, { status: 'pending_sent', displayName: name, photoURL: photo });
+            // Doc para o destinatário
+            const receiverRef = doc(db, 'users', uid, 'friends', currentUser.uid);
+            batch.set(receiverRef, { status: 'pending_received', displayName: userProfile.displayName, photoURL: userProfile.photoURL });
+
+            try {
+                await batch.commit();
+                showToast("Pedido de amizade enviado!", "success");
+            } catch (error) {
+                console.error("Erro ao enviar pedido:", error);
+                showToast("Erro ao enviar pedido.", "error");
+            }
+        }
+        
+        async function acceptFriendRequest(requesterId) {
+            const batch = writeBatch(db);
+            const data = { status: 'accepted', since: serverTimestamp() };
+            // Atualiza doc do usuário atual
+            const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
+            batch.update(userRef, data);
+            // Atualiza doc do remetente
+            const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
+            batch.update(requesterRef, data);
+
+            try {
+                await batch.commit();
+                showToast("Amizade aceita!", "success");
+            } catch (error) {
+                console.error("Erro ao aceitar pedido:", error);
+                showToast("Erro ao aceitar pedido.", "error");
+            }
+        }
+
+        async function rejectFriendRequest(requesterId) {
+             const batch = writeBatch(db);
+            // Deleta doc do usuário atual
+            const userRef = doc(db, 'users', currentUser.uid, 'friends', requesterId);
+            batch.delete(userRef);
+            // Deleta doc do remetente
+            const requesterRef = doc(db, 'users', requesterId, 'friends', currentUser.uid);
+            batch.delete(requesterRef);
+            try {
+                await batch.commit();
+                showToast("Pedido recusado.", "info");
+            } catch (error) {
+                console.error("Erro ao recusar pedido:", error);
+                showToast("Erro ao recusar pedido.", "error");
+            }
+        }
+        
+        async function renderProfileView(profileId) {
+            app.profile.content.innerHTML = `<div class="text-center"><i data-feather="loader" class="animate-spin mx-auto text-emerald-400 w-12 h-12"></i></div>`;
+            feather.replace();
+
+            try {
+                const profileRef = doc(db, 'users', profileId);
+                const docSnap = await getDoc(profileRef);
+
+                if (!docSnap.exists()) {
+                    app.profile.content.innerHTML = `<p class="text-center text-red-400">Perfil não encontrado.</p>`;
+                    return;
+                }
+                
+                const profileData = { uid: docSnap.id, ...docSnap.data() };
+                const isCurrentUser = profileData.uid === currentUser.uid;
+                let actionButtonHtml = '';
+                
+                if (isCurrentUser) {
+                    actionButtonHtml = `<button id="edit-profile-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0"><i data-feather="edit-2" class="w-4 h-4"></i> Editar Perfil</button>`;
+                } else {
+                    const friendship = friendships.find(f => f.id === profileData.uid);
+                    if (friendship) {
+                        if (friendship.status === 'accepted') actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-emerald-400 font-bold"><i data-feather="check-circle"></i> Amigos</span>`;
+                        else if (friendship.status === 'pending_sent') actionButtonHtml = `<span class="mt-8 inline-flex items-center gap-2 text-gray-400 font-bold"><i data-feather="send"></i> Pedido Enviado</span>`;
+                        else if (friendship.status === 'pending_received') actionButtonHtml = `<div class="mt-8 flex gap-2"><button class="accept-friend-request-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Aceitar</button><button class="reject-friend-request-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" data-uid="${profileData.uid}">Recusar</button></div>`;
+                    } else {
+                         actionButtonHtml = `<button class="send-friend-request-btn w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition-colors mt-8 flex items-center gap-2 mx-auto sm:mx-0" data-uid="${profileData.uid}" data-name="${profileData.displayName}" data-photo="${profileData.photoURL || ''}"><i data-feather="user-plus" class="w-4 h-4"></i> Adicionar Amigo</button>`;
+                    }
+                }
+                const placeholderAvatar = `https://placehold.co/128x128/2c3440/e0e0e0?text=${profileData.displayName[0].toUpperCase()}`;
+
+                const displayHtml = `
+                     <div id="display-profile">
+                        <div class="flex flex-col sm:flex-row items-center gap-6">
+                            <img class="w-32 h-32 rounded-full object-cover bg-gray-700 border-4 border-emerald-500" src="${profileData.photoURL || placeholderAvatar}" onerror="this.src='${placeholderAvatar}'">
+                            <div class="text-center sm:text-left">
+                                <h2 class="text-3xl font-bold text-white">${profileData.displayName}</h2>
+                                <p class="text-gray-400">${profileData.email}</p>
+                                <p class="mt-4 text-gray-300">${profileData.bio || 'Nenhuma bio definida.'}</p>
+                            </div>
+                        </div>
+                        ${actionButtonHtml}
+                     </div>`;
+                
+                const editFormHtml = isCurrentUser ? `
+                     <form id="edit-profile-form" class="hidden">
+                         <h2 class="text-2xl font-bold text-white mb-6">Editar Perfil</h2>
+                          <div class="mb-4">
+                            <label for="profile-edit-name" class="block text-gray-400 text-sm font-bold mb-2">Nome de Perfil</label>
+                            <input type="text" id="profile-edit-name" required class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" value="${profileData.displayName}">
+                        </div>
+                         <div class="mb-4">
+                            <label for="profile-edit-bio" class="block text-gray-400 text-sm font-bold mb-2">Bio</label>
+                            <textarea id="profile-edit-bio" class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" rows="3">${profileData.bio || ''}</textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label for="profile-edit-photo" class="block text-gray-400 text-sm font-bold mb-2">URL da Foto</label>
+                            <input type="url" id="profile-edit-photo" class="w-full bg-gray-700 rounded-lg px-4 py-3 text-white" value="${profileData.photoURL || ''}">
+                        </div>
+                        <div class="flex gap-4">
+                             <button type="button" id="cancel-edit-profile-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 rounded-lg">Cancelar</button>
+                            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg">Salvar</button>
+                        </div>
+                     </form>` : '';
+
+                app.profile.content.innerHTML = displayHtml + editFormHtml;
+                feather.replace();
+
+            } catch (error) {
+                console.error("Erro ao carregar perfil do usuário:", error);
+                app.profile.content.innerHTML = `<p class="text-center text-red-400">Erro ao carregar perfil.</p>`;
+            }
+        }
+
+        // Inicia tudo
+        initAuth();
     </script>
 </body>
 </html>
-
